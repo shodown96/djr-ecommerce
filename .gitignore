@@ -1,0 +1,11 @@
+env
+**/*.pyc
+**/__pycache__
+db.sqlite3
+node_modules
+build
+static
+.DS_Store
+.env
+mdbpro-compiled-4.18.0.css
+common.css

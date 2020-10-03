@@ -1,0 +1,76 @@
+.profile__nav .nav-item.active {
+  background-color: #eee;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  padding: 0px;
+}
+
+.trueBody {
+  padding-bottom: 20% !important;
+}
+
+@media (max-width: 1100px) {
+  .trueBody {
+    padding-bottom: 40% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .trueBody {
+    padding-bottom: 70% !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .trueBody {
+    padding-bottom: 100% !important;
+  }
+}
+
+@media (max-width: 540px) {
+  .trueBody {
+    padding-bottom: 160% !important;
+  }
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100% !important;
+}
+
+.cartOp {
+  cursor: pointer;
+}
+.alert {
+  word-wrap: break-word;
+}
+
+[type="radio"]:checked + label:before {
+  background-color: #2bbbad !important;
+  box-shadow: none !important;
+  border: none;
+}
+[type="radio"] + label:after,
+[type="radio"]:checked + label:after {
+  opacity: 0;
+}
+
+.jumbotron-image {
+  background-image: url("components/wall1.jpg");
+  background-size: cover;
+}
+
+.splashScreen {
+  z-index: 3000;
+  background-color: #212529 !important;
+  justify-content: space-around;
+  display: flex;
+  padding-top: 450px;
+  transition: all 1s ease-out;
+}
