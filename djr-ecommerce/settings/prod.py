@@ -1,7 +1,7 @@
 '''Use this for production'''
 
-import django_heroku
 from .base import *
+import django_heroku
 
 DEBUG = False
 ALLOWED_HOSTS += ['djr-ecommerce.herokuapp.com']

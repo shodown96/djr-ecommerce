@@ -1,2 +1,2 @@
 release: python manage.py migrate
-web: gunicorn BlogApi.wsgi --log-file -
+web: gunicorn djr-ecommerce.wsgi --log-file -
