@@ -54,7 +54,7 @@ const PaymentHistory = () => {
                     );
                 })}
 
-                {!payments &&
+                {payments?.length < 0 &&
                     <tr>
                         <td colSpan="4"><h5 className="text-center text-muted mx-auto">You have not made any purchases yet.</h5></td>
                     </tr>
