@@ -16,6 +16,8 @@ const ProductDetail = (props) => {
         formData: {}
     })
 
+    const [notFound, setNotFound] = useState(false)
+
     useEffect(() => {
         handleFetchItem();
         //eslint-disable-next-line
@@ -37,9 +39,11 @@ const ProductDetail = (props) => {
             .get(productDetailURL(params.productID))
             .then(res => {
                 setState({ ...state, data: res.data, loading: false });
+                setNotFound(false)
             })
             .catch(err => {
                 setState({ ...state, error: err, loading: false });
+                setNotFound(true)
             });
     };
 
@@ -54,7 +58,7 @@ const ProductDetail = (props) => {
     const handleAddToCart = (e, slug) => {
         e.preventDefault()
         if (!props.token) { return props.history.push("/login") }
-        setState({ ...state, loading: true, eroor: false, success: false });
+        setState({ ...state, loading: true, error: false, success: false });
         const { formData } = state;
 
         const variations = handleFormatData(formData);
@@ -125,6 +129,13 @@ const ProductDetail = (props) => {
 
     const { error, loading, success } = state;
 
+    const handleErrorPage = () => {
+        if (notFound) {
+            setNotFound(false)
+            return <ErrorPage />
+        }
+        return null
+    }
     return (
         <MDBContainer className="">
             {error && item !== null && (
@@ -147,7 +158,7 @@ const ProductDetail = (props) => {
                     <p>Continue shopping.</p>
                 </MDBAlert>
             )}
-            {item && !loading ?
+            {item ?
 
                 <MDBRow className="w-100">
                     <MDBCol md="6" className="mb-2">
@@ -219,7 +230,7 @@ const ProductDetail = (props) => {
 
                     </MDBCol>
                 </MDBRow>
-                : <ErrorPage />}
+                : handleErrorPage()}
         </MDBContainer>
     )
 }

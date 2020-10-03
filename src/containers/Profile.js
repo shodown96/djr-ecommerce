@@ -190,16 +190,16 @@ const Profile = (props) => {
                 <MDBCol lg="4" className="mb-4">
                     <MDBNav className="flex-column profile__nav">
                         <MDBNavItem className="border" active={activeItem === "profile"}>
-                            <MDBNavLink className="text-black-50" to="#!" onClick={() => handleItemClick("profile")}>Profile</MDBNavLink>
+                            <MDBNavLink className="text-black-50" to="#" onClick={() => handleItemClick("profile")}>Profile</MDBNavLink>
                         </MDBNavItem>
                         <MDBNavItem className="border" active={activeItem === "billingAddress"}>
-                            <MDBNavLink className="text-black-50" onClick={() => handleItemClick("billingAddress")} to="#!">Billing Address</MDBNavLink>
+                            <MDBNavLink className="text-black-50" onClick={() => handleItemClick("billingAddress")} to="#">Billing Address</MDBNavLink>
                         </MDBNavItem>
                         <MDBNavItem className="border" active={activeItem === "shippingAddress"}>
-                            <MDBNavLink className="text-black-50" onClick={() => handleItemClick("shippingAddress")} to="#!">Shipping Address</MDBNavLink>
+                            <MDBNavLink className="text-black-50" onClick={() => handleItemClick("shippingAddress")} to="#">Shipping Address</MDBNavLink>
                         </MDBNavItem>
                         <MDBNavItem className="border" active={activeItem === "paymentHistory"}>
-                            <MDBNavLink className="text-black-50" to="#!" onClick={() => handleItemClick("paymentHistory")}>Payment History</MDBNavLink>
+                            <MDBNavLink className="text-black-50" to="#" onClick={() => handleItemClick("paymentHistory")}>Payment History</MDBNavLink>
                         </MDBNavItem>
                     </MDBNav>
                 </MDBCol>

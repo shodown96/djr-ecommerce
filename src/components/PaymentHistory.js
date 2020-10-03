@@ -30,9 +30,8 @@ const PaymentHistory = () => {
                 setState({ error: err, loading: false });
             });
     };
-    // const isPaystack = (ref) => {
-    //     `${ref}`.
-    // }
+
+    const { payments } = state
     return (
         <MDBTable responsive>
             <MDBTableHead>
@@ -44,7 +43,7 @@ const PaymentHistory = () => {
                 </tr>
             </MDBTableHead>
             <MDBTableBody>
-                {state.payments?.map((p, i) => {
+                {payments?.map((p, i) => {
                     return (
                         <tr key={i}>
                             <td>{p.id}</td>
@@ -54,6 +53,13 @@ const PaymentHistory = () => {
                         </tr>
                     );
                 })}
+
+                {!payments &&
+                    <tr>
+                        <td colSpan="4"><h5 className="text-center text-muted mx-auto">You have not made any purchases yet.</h5></td>
+                    </tr>
+
+                }
 
             </MDBTableBody>
         </MDBTable>
