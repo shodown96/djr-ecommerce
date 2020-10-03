@@ -153,7 +153,7 @@ const OrderSummary = (props) => {
                         </tr>
                     </MDBTableHead>
                     <MDBTableBody>
-                        {data?.order_items?.length > 0 ? data?.order_items?.map((item, i) => (
+                        {data?.order_items?.length > 0 && data?.order_items?.map((item, i) => (
                             <tr key={i}>
                                 <td>{i + 1}</td>
                                 <td>{item.item.title} {renderVariations(item)}</td>
@@ -177,7 +177,7 @@ const OrderSummary = (props) => {
                                     <MDBIcon icon="trash" className="ml-md-5 ml-2 red-text cartOp" onClick={() => handleRemoveItem(item.id)} />
                                 </td>
                             </tr>
-                        )) : null}
+                        ))}
                         <tr>
                             <td colSpan="4"></td>
                             <td>

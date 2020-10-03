@@ -16,7 +16,7 @@ const Checkout = (props) => {
         loading: false,
         error: null,
         success: false,
-        stripe: false,
+        stripe: true,
         selectedBillingAddress: "",
         selectedShippingAddress: ""
     });

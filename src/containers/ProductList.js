@@ -45,14 +45,14 @@ const ProductList = (props) => {
     const handleLoading = () => {
         if (loading) {
             return (
-                <div className="mx-auto text-center">
+                <div className="mx-auto text-center green-text">
                     <div className="spinner-grow" role="status">
                         <span className="sr-only">Loading...</span>
                     </div>
                 </div>
             )
         }
-        else { return (<h4 className="text-center mx-auto text-black-50">Items unavailable, please check your server</h4>) }
+        else { console.log("haaaaaa"); return (<h4 className="text-center mx-auto text-black-50">Items unavailable, we are currently looking into it.</h4>) }
     }
 
     const checkInCart = (id) => {
@@ -80,7 +80,7 @@ const ProductList = (props) => {
 
     return (
         <MDBContainer>
-            {items ? items.map((item, i) =>
+            {items.length > 0 ? items.map((item, i) =>
                 <section key={i}>
                     <div className="row mb-4">
                         <div className="col-md-5 col-lg-3 col-xl-3">
@@ -103,7 +103,7 @@ const ProductList = (props) => {
                                 <div className="col-lg-7 col-xl-7">
 
                                     <h5>{item.title}</h5>
-                                    <p className="mb-2 text-muted text-uppercase small">Shirts</p>
+                                    <p className="mb-2 text-muted text-uppercase small">{item.category}</p>
                                     <hr />
                                     <p className="mb-lg-0">{item.description.slice(0, 180) + "..."}</p>
 
