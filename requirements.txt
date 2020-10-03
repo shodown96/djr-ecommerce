@@ -2,7 +2,7 @@ django
 django-allauth
 django-cors-headers
 django-rest-auth
-djangorestframework
+djangorestframework==3.11.0
 gunicorn
 whitenoise
 django-widget-tweaks
