@@ -4,34 +4,14 @@ import django_heroku
 from .base import *
 
 DEBUG = False
-ALLOWED_HOSTS += ['djr-blog.herokuapp.com']
+ALLOWED_HOSTS += ['djr-ecommerce.herokuapp.com']
 SECRET_KEY = os.environ.get("SECRET_KEY")
-WSGI_APPLICATION = 'djr-ecommerce.wsgi.prod.application'
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'db_name',
-        'USER': 'db_user',
-        'PASSWORD': 'db_password',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
-}
 
 
 CORS_ORIGIN_WHITELIST = (
-    'https://djr-blog.herokuapp.com',
+    'https://djr-ecommerce.herokuapp.com',
 )
 
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_TEST_PUBLIC_KEY')
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_TEST_SECRET_KEY')
