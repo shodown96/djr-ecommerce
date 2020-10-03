@@ -18,3 +18,4 @@ stripe
 requests
 python-decouple
 django-countries
+packaging
