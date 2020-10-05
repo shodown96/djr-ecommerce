@@ -13,6 +13,7 @@ function ProfileForm(props) {
         username: ""
     })
     const [success, setSuccess] = useState(false)
+    const [deleted, setDeleted] = useState(false)
     // const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     // let randomCode = "";
     // for (let i in letters) {
@@ -38,6 +39,13 @@ function ProfileForm(props) {
         e.preventDefault()
         updateProfile(data)
         setSuccess(true)
+    }
+
+    const handleDelete = e => {
+        setTimeout(() => {
+            setDeleted(true)
+            setTimeout(() => deleteAccount(), 1500);
+        }, 1000);
     }
 
     const handleErrors = (e) => <>
@@ -76,10 +84,16 @@ function ProfileForm(props) {
                 <MDBInput label="Username" name="username" value={data.username} onChange={handleChange} required />
                 <MDBBtn type="submit">Update</MDBBtn>
             </form>
+
+            {deleted &&
+                <MDBAlert color="success" className="mt-4">
+                    <p className="mb-0">Your account has been deleted successfuly !!</p>
+                </MDBAlert>
+            }
             <MDBAlert color="danger" className="mt-4">
                 <h4>Delete Your Account</h4>
                 <p>Once you do this, there is no going back... type in {}</p>
-                <MDBBtn color="danger" onClick={deleteAccount}>Delete my account</MDBBtn>
+                <MDBBtn color="danger" onClick={handleDelete}>Delete my account</MDBBtn>
             </MDBAlert>
         </div>
     )
