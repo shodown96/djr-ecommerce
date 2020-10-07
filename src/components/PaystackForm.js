@@ -95,7 +95,8 @@
 
 import React from 'react'
 import { usePaystackPayment } from 'react-paystack'
-import { paystackKey, PaystackReceiveURL } from '../constants'
+import { PaystackReceiveURL } from '../constants'
+import { paystackKey } from '../apikeys'
 import { connect } from 'react-redux'
 import { authAxios } from '../utils'
 import { MDBBtn } from 'mdbreact'

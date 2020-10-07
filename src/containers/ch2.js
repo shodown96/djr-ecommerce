@@ -6,13 +6,13 @@ import { MDBAlert, MDBBtn, MDBContainer } from 'mdbreact';
 import { authAxios } from "../utils";
 import {
     checkoutURL,
-    addressListURL,
-    // stripeKey
+    addressListURL
 } from "../constants";
 import { Link, Redirect } from 'react-router-dom';
 import OrderPreview from '../components/OrderPreview';
 import CouponForm from '../components/CouponForm';
 import { connect } from 'react-redux';
+import { stripeKey } from '../apikeys';
 
 
 const Checkout = (props) => {
