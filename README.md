@@ -16,7 +16,7 @@ python manage.py runserver
 ## Frontend development workflow
 
 ```json
-Put in your paystack and stripe apikeys in src/apikeys.js
+Create the file "src/apikeys.js" and export your stripe and paystack apikeys from there
 npm i
 npm start
 ```
