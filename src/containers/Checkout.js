@@ -9,6 +9,7 @@ import CouponForm from '../components/CouponForm';
 import { connect } from 'react-redux';
 import StripeForm from '../components/StripeForm';
 import PaystackForm from '../components/PaystackForm';
+import { fetchCart } from '../store/actions/cart';
 // import "../components/FormValidation"
 
 const Checkout = (props) => {
@@ -121,6 +122,7 @@ const Checkout = (props) => {
             <MDBAlert color="success">
                 <h4>Payment Successful !!</h4>
                 <p>Thank you for using our services.</p>
+                {props.refreshCart()}
             </MDBAlert>
         )
         else if (error) return (
@@ -216,8 +218,10 @@ const mapStateToProps = (state) => ({
     cart: state.cart.shoppingCart,
 })
 
-const mapDispatchToProps = {
-
+const mapDispatchToProps = dispatch => {
+    return {
+        refreshCart: () => dispatch(fetchCart())
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Checkout)
