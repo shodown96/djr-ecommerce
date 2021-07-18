@@ -4,28 +4,28 @@ import { updateObject } from "../utility";
 const initialState = {
   shoppingCart: null,
   error: null,
-  loading: false
+  loading: false,
 };
 
 const cartStart = (state, action) => {
   return updateObject(state, {
     error: null,
-    loading: true
+    loading: true,
   });
 };
 
 const cartSuccess = (state, action) => {
   return updateObject(state, {
-    shoppingCart: action.data,
+    shoppingCart: action.data.sort((a, b) => b.id - a.id),
     error: null,
-    loading: false
+    loading: false,
   });
 };
 
 const cartFail = (state, action) => {
   return updateObject(state, {
     error: action.error,
-    loading: false
+    loading: false,
   });
 };
 
