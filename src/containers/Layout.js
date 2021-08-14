@@ -18,10 +18,11 @@ export const Layout = (props) => {
 
   const history = useHistory()
   useEffect(() => {
-    props.fetchCart();
-    props.onTryAutoSignup()
-    // eslint-disable-next-line
-  }, [])
+    if(authenticated) {
+      props.fetchCart();
+      props.onTryAutoSignup()
+    }
+  }, [authenticated])
 
   return (
     <div>
