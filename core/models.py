@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Sum
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
+from .utils import image_resize
 
 
 CATEGORY_CHOICES = (
@@ -64,6 +65,10 @@ class Item(models.Model):
 
     def get_variations(self):
         return self.variation_set.all()
+
+    def save(self, *args, **kwargs):
+        image_resize(self.image, 1000, 1000)
+        super().save(*args, **kwargs)
 
 
 class Variation(models.Model):
