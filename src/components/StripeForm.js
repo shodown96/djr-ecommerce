@@ -58,7 +58,7 @@ function StripeForm(props) {
     }
     return (
         <form onSubmit={handleStripe} className="needs-valiation">
-
+            <p className="text-muted">TEST CARD: 4242 4242 4242 4242 || EXP:04/24 || CVV:242 || PIN:42424</p>
             <CardElement className="my-5"
                 options={{
                     style: {

@@ -5,10 +5,10 @@ import { MDBContainer } from "mdbreact"
 export const Home = () => {
   return (
     <>
-      <div class="jumbotron-image mt-n5" style={{ "height": "400px" }}>
-        <div class="mask rgba-stylish-strong d-flex align-items-center h-100">
-          <div class="container text-center white-text py-5">
-            <h1 class="mb-0">DJR-ECOMMERCE</h1>
+      <div className="jumbotron-image mt-n5" style={{ "height": "400px" }}>
+        <div className="mask rgba-stylish-strong d-flex align-items-center h-100">
+          <div className="container text-center white-text py-5">
+            <h1 className="mb-0">DJR-ECOMMERCE</h1>
           </div>
         </div>
       </div>
@@ -22,7 +22,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-6 col-lg-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view zoom brighten z-depth-2 rounded">
                   <img className="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/new/img(1).jpg" alt="Sample" />
                   <a href="#!" className="text-white">
@@ -40,7 +40,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-6 col-lg-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view zoom brighten z-depth-2 rounded">
                   <img className="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/new/img(2).jpg" alt="Sample" />
                   <a href="#!" className="text-white">
@@ -58,7 +58,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-6 col-lg-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view zoom brighten z-depth-2 rounded">
                   <img className="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/new/img(3).jpg" alt="Sample" />
                   <a href="#!" className="text-white">
@@ -76,7 +76,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-6 col-lg-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view zoom brighten z-depth-2 rounded">
                   <img className="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/new/img(4).jpg" alt="Sample" />
                   <a href="#!" className="text-white">
@@ -94,7 +94,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-6 col-lg-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view zoom brighten z-depth-2 rounded">
                   <img className="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/new/img(5).jpg" alt="Sample" />
                   <a href="#!" className="text-white">
@@ -112,7 +112,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-6 col-lg-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view zoom brighten z-depth-2 rounded">
                   <img className="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/new/img(6).jpg" alt="Sample" />
                   <a href="#!" className="text-white">
@@ -227,7 +227,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view zoom z-depth-2 rounded">
                   <img className="img-fluid w-100" src="https://mdbootstrap.com/img/Photos/Horizontal/Interior/img(58).jpg" alt="Sample" />
                   <a href="#!">
@@ -238,7 +238,7 @@ export const Home = () => {
                   <h5 className="font-weight-bolder">Round mirror</h5>
                   <h6 className="mb-3 font-weight-bolder">$ 55.00</h6>
                   <button type="button" className="btn btn-default btn-sm mr-1 waves-effect waves-light"><i className="fas fa-shopping-cart pr-2" />Add to cart</button>
-                  <button type="button" className="btn btn-danger btn-sm px-3 material-tooltip-main waves-effect waves-light" data-toggle="tooltip" data-placement="top" title data-original-title="Add to wishlist"><i className="far fa-heart" /></button>
+                  <button type="button" className="btn btn-danger btn-sm px-3 material-tooltip-main waves-effect waves-light" data-toggle="tooltip" data-placement="top" data-original-title="Add to wishlist"><i className="far fa-heart" /></button>
                 </div>
               </div>
               {/* Card */}
@@ -247,7 +247,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view zoom z-depth-2 rounded">
                   <img className="img-fluid w-100" src="https://mdbootstrap.com/img/Photos/Horizontal/Interior/img(59).jpg" alt="Sample" />
                   <a href="#!">
@@ -258,7 +258,7 @@ export const Home = () => {
                   <h5 className="font-weight-bolder">Small wicker basket</h5>
                   <h6 className="mb-3 font-weight-bolder">$ 9.00</h6>
                   <button type="button" className="btn btn-default btn-sm mr-1 waves-effect waves-light"><i className="fas fa-shopping-cart pr-2" />Add to cart</button>
-                  <button type="button" className="btn btn-danger btn-sm px-3 material-tooltip-main waves-effect waves-light" data-toggle="tooltip" data-placement="top" title data-original-title="Add to wishlist"><i className="far fa-heart" /></button>
+                  <button type="button" className="btn btn-danger btn-sm px-3 material-tooltip-main waves-effect waves-light" data-toggle="tooltip" data-placement="top" data-original-title="Add to wishlist"><i className="far fa-heart" /></button>
                 </div>
               </div>
               {/* Card */}
@@ -267,7 +267,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view zoom z-depth-2 rounded">
                   <img className="img-fluid w-100" src="https://mdbootstrap.com/img/Photos/Horizontal/Interior/img(60).jpg" alt="Sample" />
                   <a href="#!">
@@ -278,7 +278,7 @@ export const Home = () => {
                   <h5 className="font-weight-bolder">Ceramic hare</h5>
                   <h6 className="mb-3 font-weight-bolder">$ 29.00</h6>
                   <button type="button" className="btn btn-default btn-sm mr-1 waves-effect waves-light"><i className="fas fa-shopping-cart pr-2" />Add to cart</button>
-                  <button type="button" className="btn btn-danger btn-sm px-3 material-tooltip-main waves-effect waves-light" data-toggle="tooltip" data-placement="top" title data-original-title="Add to wishlist"><i className="far fa-heart" /></button>
+                  <button type="button" className="btn btn-danger btn-sm px-3 material-tooltip-main waves-effect waves-light" data-toggle="tooltip" data-placement="top" data-original-title="Add to wishlist"><i className="far fa-heart" /></button>
                 </div>
               </div>
               {/* Card */}
@@ -297,7 +297,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view z-depth-1 w-50 rounded-circle avatar-sm mx-auto">
                   <img className="img-fluid w-100" src="https://mdbootstrap.com/img/Photos/Avatars/img%20(1).jpg" alt="Sample" />
                 </div>
@@ -318,7 +318,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view z-depth-1  w-50 rounded-circle avatar-sm mx-auto">
                   <img className="img-fluid w-100" src="https://mdbootstrap.com/img/Photos/Avatars/img%20(2).jpg" alt="Sample" />
                 </div>
@@ -339,7 +339,7 @@ export const Home = () => {
             {/* Grid column */}
             <div className="col-md-4 mb-4">
               {/* Card */}
-              <div className>
+              <div>
                 <div className="view z-depth-1 w-50 rounded-circle avatar-sm mx-auto">
                   <img className="img-fluid w-100" src="https://mdbootstrap.com/img/Photos/Avatars/img%20(3).jpg" alt="Sample" />
                 </div>

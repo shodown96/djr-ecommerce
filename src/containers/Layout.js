@@ -18,12 +18,11 @@ export const Layout = (props) => {
 
   const history = useHistory()
   useEffect(() => {
-    if(authenticated) {
-      props.fetchCart();
-      props.onTryAutoSignup()
-    }
-  }, [authenticated])
-
+    props.fetchCart();
+    props.onTryAutoSignup()
+    // eslint-disable-next-line
+  }, [])
+  
   return (
     <div>
       <MDBNavbar color="elegant-color" dark expand="md">
@@ -111,7 +110,7 @@ export const Layout = (props) => {
         <MDBContainer fluid className="text-center text-md-left">
           <MDBRow>
             <MDBCol md="6">
-              <h5 className="title font-weight-bolder" onClick>DJR-ECOMMERCE</h5>
+              <h5 className="title font-weight-bolder">DJR-ECOMMERCE</h5>
               <p>
                 Here you can use rows and columns here to organize your footer
                 content.

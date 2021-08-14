@@ -158,7 +158,7 @@ const OrderSummary = (props) => {
                                 <td>{i + 1}</td>
                                 <td>{item.item.title} {renderVariations(item)}</td>
                                 <td className="font-weight-bolder">${item.item.price}</td>
-                                <td className="d-flex justify-content-around">
+                                <td className="d-flex justify-content-around align-items-center">
                                     <MDBIcon icon="plus" className="cartOp" onClick={() =>
                                         handleAddToCart(
                                             item.item.slug,
@@ -166,7 +166,10 @@ const OrderSummary = (props) => {
                                         )
                                     } />
                                     {item.quantity}
+                                    {!item.item_variations.length > 0 ?
                                     <MDBIcon icon="minus" className="cartOp" onClick={() => handleRemoveQuantityFromCart(item.item.slug)} />
+                                    :<MDBIcon icon="ban" className="cartOp text-muted" />
+                                }
                                 </td>
                                 <td className="">
                                     {item.item.discount_price && (

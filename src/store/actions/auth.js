@@ -10,6 +10,7 @@ export const authStart = () => {
 };
 
 export const authSuccess = (token, user = {}) => {
+  authAxios.defaults.headers['Authorization'] = "Token " + token;
   return {
     type: actionTypes.AUTH_SUCCESS,
     token: token,
@@ -56,7 +57,6 @@ export const authLogin = (username, password) => {
       })
       .then(res => {
         const token = res.data.key;
-        authAxios.defaults.headers['Authorization'] = "Token " + token;
         const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
         localStorage.setItem("token", token);
         localStorage.setItem("expirationDate", expirationDate);
@@ -83,7 +83,6 @@ export const authSignup = (username, email, password1, password2) => {
       })
       .then(res => {
         const token = res.data.key;
-        authAxios.defaults.headers['Authorization'] = "Token " + token;
         const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
         localStorage.setItem("token", token);
         localStorage.setItem("expirationDate", expirationDate);

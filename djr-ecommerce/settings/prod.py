@@ -10,7 +10,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 CORS_ORIGIN_WHITELIST = (
     'https://djr-ecommerce.herokuapp.com',
-    'http://localhost:3000',
+    # 'http://localhost:3000',
 )
 
 

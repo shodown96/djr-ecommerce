@@ -16,7 +16,7 @@ const cartStart = (state, action) => {
 
 const cartSuccess = (state, action) => {
   return updateObject(state, {
-    shoppingCart: action.data.sort((a, b) => b.id - a.id),
+    shoppingCart: action.data,
     error: null,
     loading: false,
   });
@@ -26,6 +26,7 @@ const cartFail = (state, action) => {
   return updateObject(state, {
     error: action.error,
     loading: false,
+    shoppingCart:null
   });
 };
 
