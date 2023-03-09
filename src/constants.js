@@ -27,9 +27,6 @@ export const userDetailURL = `${endpoint}/user-detail/`;
 export const PaystackChargeURL = `${endpoint}/paystack-charge/`;
 export const PaystackReceiveURL = `${endpoint}/paystack-receive/`;
 
-export const stripeKey = "pk_test_51HPyn0FyNz3IOs9CbTEzGzGabecd5LM6vokVSiWmyVpHJbX3hM5hDX8zDrzmQ9517Wwrz1u7QJz31FydlrmRXbEl00vsz7YsdJ"
-export const paystackKey = "pk_test_3a3b0b7dff98f6fe26d1f2f06616457342cc0b7e"
-
 export const redirect = (props, location = "/login") => {
   if (!props.token) { return props.history.push(location) }
 }
