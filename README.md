@@ -49,3 +49,7 @@ cd client
 npm i
 npm start
 ```
+
+
+## Docker
+Not tested yet

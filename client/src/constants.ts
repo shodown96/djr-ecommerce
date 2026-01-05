@@ -1,12 +1,11 @@
-const debug = !!import.meta.env.DEV
-let host = debug ? "http://127.0.0.1:8000" : "https://djr-ecommerce.herokuapp.com";
-
-export default host;
+export const BASE_API_URL = import.meta.env.VITE_BASE_API_URL
 
 const apiURL = "/api";
 
-export const endpoint = `${host}${apiURL}`;
+export const endpoint = `${BASE_API_URL}${apiURL}`;
 
+export const loginURL = `${endpoint}/auth/login/`;
+export const signupURL = `${endpoint}/auth/signup/`;
 export const productListURL = `${endpoint}/products/`;
 export const productDetailURL = (id:string) => `${endpoint}/products/${id}/`;
 export const addToCartURL = `${endpoint}/add-to-cart/`;

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import host from "../constants";
+import {BASE_API_URL} from "../constants";
 
 type OrderItem = {
   quantity: number;
@@ -40,7 +40,7 @@ const OrderPreview: React.FC<Props> = ({ cart }) => {
             <div className="flex w-full items-center justify-between p-4 gap-4">
               <Link to={`products/${item.item.id}`}>
                 <img
-                  src={`${host}${item.item.image}`}
+                  src={`${BASE_API_URL}${item.item.image}`}
                   alt={item.item.title}
                   className="h-50 w-auto object-contain"
                 />

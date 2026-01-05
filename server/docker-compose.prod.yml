@@ -1,0 +1,65 @@
+# docker-compose.prod.yml (PRODUCTION)
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: ecommerce
+      POSTGRES_PASSWORD: ecommerce
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+
+  rabbitmq:
+    image: rabbitmq:3-management
+
+  frontend_build:
+    build:
+      context: ./frontend
+    volumes:
+      - frontend_build:/build
+
+  backend:
+    build: ./backend
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: postgres://ecommerce:ecommerce@postgres:5432/ecommerce
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: amqp://rabbitmq:5672//
+    volumes:
+      - frontend_build:/app/static/frontend
+      - frontend_build:/app/templates
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    ports:
+      - "8000:8000"
+
+  celery_worker:
+    build: ./backend
+    command: celery -A project worker -l info
+    environment:
+      DATABASE_URL: postgres://ecommerce:ecommerce@postgres:5432/ecommerce
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: amqp://rabbitmq:5672//
+    depends_on:
+      - backend
+      - redis
+      - rabbitmq
+
+  event_consumer:
+    build: ./backend
+    command: python manage.py run_notifications_consumer
+    environment:
+      CELERY_BROKER_URL: amqp://rabbitmq:5672//
+    depends_on:
+      - rabbitmq
+
+volumes:
+  postgres_data:
+  frontend_build:

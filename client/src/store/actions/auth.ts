@@ -1,7 +1,11 @@
 import axios from "axios";
-import * as actionTypes from "./actionTypes";
-import host, { userDetailURL } from "../../constants";
 import { authAxios } from "../../axios";
+import {
+  loginURL,
+  signupURL,
+  userDetailURL
+} from "../../constants";
+import * as actionTypes from "./actionTypes";
 import { fetchCart } from "./cart";
 
 // --------- BASIC ACTIONS ---------
@@ -56,7 +60,7 @@ export const authLogin = (username: string, password: string) => {
     dispatch(authStart());
 
     axios
-      .post(`${host}/rest-auth/login/`, { username, password })
+      .post(loginURL, { username, password })
       .then((res) => {
         const token = res.data.key;
         const expiration = Date.now() + 3600 * 1000;
@@ -83,7 +87,7 @@ export const authSignup = (
     dispatch(authStart());
 
     axios
-      .post(`${host}/rest-auth/registration/`, {
+      .post(signupURL, {
         username,
         email,
         password1,
