@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { authAxios } from "../axios";
 import { PaystackReceiveURL } from "../constants";
-import { PAYSTACK_PUBLIC_KEY } from "../envs";
 
 const paystackInstance = new PaystackPop();
 
@@ -58,7 +57,7 @@ const PaystackForm: React.FC<Props> = ({
     if (!valid) return;
 
     paystackInstance.newTransaction({
-      key: PAYSTACK_PUBLIC_KEY,
+      key: import.meta.env.PAYSTACK_PUBLIC_KEY,
       email: user.email,
       amount: Number(order.total) * 381.5 * 100,
 

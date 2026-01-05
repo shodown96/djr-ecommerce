@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { type ChangeEvent, type FormEvent, useState } from "react";
 import { connect } from "react-redux";
 import { authAxios } from "../axios";
 import { addCouponURL } from "../constants";

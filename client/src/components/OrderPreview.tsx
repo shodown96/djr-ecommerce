@@ -42,7 +42,7 @@ const OrderPreview: React.FC<Props> = ({ cart }) => {
                 <img
                   src={`${host}${item.item.image}`}
                   alt={item.item.title}
-                  className="h-[200px] w-auto object-contain"
+                  className="h-50 w-auto object-contain"
                 />
               </Link>
 

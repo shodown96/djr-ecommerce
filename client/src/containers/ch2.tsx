@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FormEvent } from "react";
+import React, { useEffect, useState, type FormEvent } from "react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { connect } from "react-redux";
 import { Link, redirect } from "react-router-dom";

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { type ChangeEvent, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, redirect } from "react-router-dom";
 import { authAxios } from "../axios";

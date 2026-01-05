@@ -1,5 +1,5 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import React, { FormEvent } from "react";
+import React, { type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAxios } from "../axios";
 import { checkoutURL } from "../constants";
