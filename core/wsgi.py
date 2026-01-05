@@ -11,7 +11,7 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-from utils.common import get_environment_mode
+from core.utilities.common import get_environment_mode
 
 env = get_environment_mode()
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'core.settings.{env}')

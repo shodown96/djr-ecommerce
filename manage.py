@@ -2,7 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-from utils.common import get_environment_mode
+from core.utilities.common import get_environment_mode
 
 
 def main():

@@ -26,6 +26,7 @@ from ecommerce.views import create_ref_code
 # from rest_auth.registration.views import RegisterView, TokenSerializer, JWTSerializer
 # from rest_auth.views import LoginView
 import stripe
+from events.publisher import publish_event
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 PAYSTACK_SECRET_KEY = settings.PAYSTACK_SECRET_KEY
@@ -508,6 +509,14 @@ class PaystackRecieveView(APIView):
             order.shipping_address = shipping_address
             order.ref_code = info['reference']
             order.save()
+            publish_event(
+                "order.completed",
+                {
+                    "order_id": str(order.id),
+                    "user_id": str(order.user_id),
+                    "total": order.get_total(),
+                },
+            )
             return Response({'message': "Payment Successful."}, status=HTTP_200_OK)
         return Response({'message': "Payment Error."}, status=HTTP_400_BAD_REQUEST)
 

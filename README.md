@@ -1,28 +1,49 @@
-# Django React Ecommerce
+# Django + React Ecommerce (Distributed Architecture)
 
-This repository contains an Ecommerce project using Django and React. The project features Django Rest Framework and Rest Auth for the Backend, React Redux, MDB for the frontend
+This repository contains an ecommerce application built with **Django** and **React**, extended with a **distributed, event-driven backend architecture**.
 
-<!--[Watch the tutorial on how to integrate Django and React](https://youtu.be/YKYVv0gm_0o) -->
+The backend uses **Django REST Framework** and is enhanced with:
+- **Celery** for background task processing
+- **Redis** for task buffering and caching
+- **RabbitMQ** as a domain event bus
+- **Kombu** for event publishing and consumption
 
-## Backend development workflow
+The frontend is built with **React, Redux, and MDB**.
 
-```
-virtualenv env
-source env/bin/activate
+---
+
+## Architecture Overview
+
+- **Django** handles HTTP requests and business logic
+- **Redis** buffers Celery tasks and caches frequently accessed data
+- **Celery Workers** execute background jobs (emails, image resizing, webhooks)
+- **RabbitMQ** publishes domain events (e.g. `order.completed`)
+- **Event Consumers** react to events and trigger async work
+- **Idempotency** prevents duplicate side effects during retries
+
+---
+
+## Backend Setup
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 python manage.py runserver
 ```
 
+## Run background process
+```
+celery -A project worker -l info
+python manage.py run_notifications_consumer
+```
+
 ## Frontend development workflow
 
+Duplicate the `.env.example` file, rename the copy to `.env` and add your own stripe and paystack keys.
+
+Then run the following
 ```
-Create the file "src/apikeys.js" and export your stripe and paystack apikeys from there
 npm i
 npm start
-```
-
-## For deploying
-
-```
-npm run build
 ```
