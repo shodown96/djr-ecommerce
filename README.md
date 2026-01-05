@@ -26,6 +26,7 @@ The frontend is built with **React, Redux, and MDB**.
 ## Backend Setup
 
 ```bash
+cd server
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -33,7 +34,7 @@ python manage.py runserver
 ```
 
 ## Run background process
-```
+```bash
 celery -A project worker -l info
 python manage.py run_notifications_consumer
 ```
@@ -43,7 +44,8 @@ python manage.py run_notifications_consumer
 Duplicate the `.env.example` file, rename the copy to `.env` and add your own stripe and paystack keys.
 
 Then run the following
-```
+```bash
+cd client
 npm i
 npm start
 ```
