@@ -15,20 +15,19 @@ class Command(BaseCommand):
         # logic for renaming the files
 
         files_to_rename = [
-            'home/settings/base.py',
-            'home/settings/dev.py',
-            'home/settings/prod.py',
-            'home/wsgi/dev.py',
-            'home/wsgi/prod.py',
+            'core/settings/base.py',
+            'core/settings/dev.py',
+            'core/settings/prod.py',
+            'core/wsgi.py',
             'manage.py'
         ]
-        folder_to_rename = 'home'
+        folder_to_rename = 'core'
 
         for f in files_to_rename:
             with open(f, 'r') as file:
                 filedata = file.read()
 
-            filedata = filedata.replace('home', new_project_name)
+            filedata = filedata.replace('core', new_project_name)
 
             with open(f, 'w') as file:
                 file.write(filedata)

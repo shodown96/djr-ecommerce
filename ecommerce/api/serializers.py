@@ -1,7 +1,7 @@
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
-from core.models import (
+from ecommerce.models import (
     Address, Item, Order, OrderItem, Coupon, Variation, ItemVariation,
     Payment
 )

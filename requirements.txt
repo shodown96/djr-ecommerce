@@ -1,20 +1,43 @@
-django
-django-allauth
-django-cors-headers
-django-rest-auth
-djangorestframework==3.11.0
-gunicorn
-whitenoise
-django-widget-tweaks
-drf-yasg
-coreapi
-django-cleanup
-gunicorn
-django-heroku
-boto3
-Pillow
-django-storages
-stripe
-requests
-python-decouple
-django-countries
+Package              Version
+-------------------- -----------
+asgiref              3.11.0
+boto3                1.42.21
+botocore             1.42.21
+certifi              2026.1.4
+charset-normalizer   3.4.4
+coreschema           0.0.4
+Django               6.0
+django-allauth       65.13.1
+django-cleanup       9.0.0
+django-cors-headers  4.9.0
+django-countries     8.2.0
+django-rest-auth     0.9.5
+django-storages      1.14.6
+django-widget-tweaks 1.5.1
+djangorestframework  3.16.1
+drf-yasg             1.21.10
+gunicorn             23.0.0
+idna                 3.11
+inflection           0.5.1
+itypes               1.2.0
+Jinja2               3.1.6
+jmespath             1.0.1
+MarkupSafe           3.0.3
+packaging            25.0
+pillow               12.1.0
+pip                  25.2
+psycopg2-binary      2.9.11
+python-dateutil      2.9.0.post0
+python-decouple      3.8
+pytz                 2025.2
+PyYAML               6.0.3
+requests             2.32.5
+s3transfer           0.16.0
+setuptools           80.9.0
+six                  1.17.0
+sqlparse             0.5.5
+stripe               14.1.0
+typing_extensions    4.15.0
+uritemplate          4.2.0
+urllib3              2.6.2
+whitenoise           6.11.0

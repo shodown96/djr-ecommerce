@@ -16,13 +16,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, BasePermission
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from core.models import Item, OrderItem, Order
+from ecommerce.models import Item, OrderItem, Order
 from .serializers import (
     ItemSerializer, OrderSerializer, ItemDetailSerializer, AddressSerializer,
     PaymentSerializer, UserDetailSerializer, User, CardSerializer, PaystackSerializer
 )
-from core.models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Variation, ItemVariation
-from core.views import create_ref_code
+from ecommerce.models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, Profile, Variation, ItemVariation
+from ecommerce.views import create_ref_code
 # from rest_auth.registration.views import RegisterView, TokenSerializer, JWTSerializer
 # from rest_auth.views import LoginView
 import stripe
@@ -213,7 +213,7 @@ class PaymentView(APIView):
 
     def post(self, request, *args, **kwargs):
         order_qs = Order.objects.filter(user=self.request.user, ordered=False)
-        userprofile = UserProfile.objects.get(user=self.request.user)
+        user_profile = Profile.objects.get(user=self.request.user)
         token = request.data.get('stripeToken')
         print("token", token)
         billing_address_id = request.data.get('selectedBillingAddress')
@@ -232,9 +232,9 @@ class PaymentView(APIView):
 
         order = order_qs[0]
 
-        # if is_valid(userprofile.stripe_customer_id):
+        # if is_valid(user_profile.stripe_customer_id):
         #     customer = stripe.Customer.retrieve(
-        #         userprofile.stripe_customer_id)
+        #         user_profile.stripe_customer_id)
         #     # customer.sources.create(source=token)
 
         # else:
@@ -242,19 +242,19 @@ class PaymentView(APIView):
         #         email=self.request.user.email,
         #     )
         #     # customer.sources.create(source=token)
-        #     userprofile.stripe_customer_id = customer['id']
-        #     userprofile.one_click_purchasing = True
-        #     userprofile.save()
+        #     user_profile.stripe_customer_id = customer['id']
+        #     user_profile.one_click_purchasing = True
+        #     user_profile.save()
 
         amount = int(order.get_total() * 100)
 
         try:
-            # if is_valid(userprofile.stripe_customer_id):
+            # if is_valid(user_profile.stripe_customer_id):
             #     # charge the customer because we cannot charge the token more than once
             #     charge = stripe.Charge.create(
             #         amount=amount,  # cents
             #         currency="usd",
-            #         customer=userprofile.stripe_customer_id
+            #         customer=user_profile.stripe_customer_id
             #     )
             # else:
             # charge once off on the token
@@ -396,7 +396,7 @@ class PaystackChargeView(APIView):
 
     def post(self, request, *args, **kwargs):
         order_qs = Order.objects.filter(user=self.request.user, ordered=False)
-        userprofile = UserProfile.objects.get(user=self.request.user)
+        user_profile = Profile.objects.get(user=self.request.user)
         billing_address_id = request.data.get('selectedBillingAddress')
         shipping_address_id = request.data.get('selectedShippingAddress')
 
@@ -470,7 +470,7 @@ class PaystackRecieveView(APIView):
 
     def post(self, request, *args, **kwargs):
         order_qs = Order.objects.filter(user=self.request.user, ordered=False)
-        userprofile = UserProfile.objects.get(user=self.request.user)
+        user_profile = Profile.objects.get(user=self.request.user)
         billing_address_id = request.data.get('selectedBillingAddress')
         shipping_address_id = request.data.get('selectedShippingAddress')
 

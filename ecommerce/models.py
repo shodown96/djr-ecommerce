@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import Sum
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
-from .utils import image_resize
+from utils.files import image_resize
 
 
 CATEGORY_CHOICES = (
@@ -25,7 +25,7 @@ ADDRESS_CHOICES = (
 )
 
 
-class UserProfile(models.Model):
+class Profile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     stripe_customer_id = models.CharField(max_length=50, blank=True, null=True)
@@ -221,9 +221,9 @@ class Refund(models.Model):
         return f"{self.pk}"
 
 
-def userprofile_receiver(sender, instance, created, *args, **kwargs):
+def user_profile_receiver(sender, instance, created, *args, **kwargs):
     if created:
-        userprofile = UserProfile.objects.create(user=instance)
+        user_profile = Profile.objects.create(user=instance)
 
 
-post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
+post_save.connect(user_profile_receiver, sender=settings.AUTH_USER_MODEL)

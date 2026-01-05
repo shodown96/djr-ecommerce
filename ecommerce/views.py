@@ -8,7 +8,7 @@ from django.views.generic import ListView, DetailView, View
 from django.shortcuts import redirect
 from django.utils import timezone
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
-from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
+from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, Profile
 
 import random
 import string
@@ -213,11 +213,11 @@ class PaymentView(View):
                 'order': order,
                 'DISPLAY_COUPON_FORM': False
             }
-            userprofile = self.request.user.userprofile
-            if userprofile.one_click_purchasing:
+            user_profile = self.request.user.user_profile
+            if user_profile.one_click_purchasing:
                 # fetch the users card list
                 cards = stripe.Customer.list_sources(
-                    userprofile.stripe_customer_id,
+                    user_profile.stripe_customer_id,
                     limit=3,
                     object='card'
                 )
@@ -236,16 +236,16 @@ class PaymentView(View):
     def post(self, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
         form = PaymentForm(self.request.POST)
-        userprofile = UserProfile.objects.get(user=self.request.user)
+        user_profile = Profile.objects.get(user=self.request.user)
         if form.is_valid():
             token = form.cleaned_data.get('stripeToken')
             save = form.cleaned_data.get('save')
             use_default = form.cleaned_data.get('use_default')
 
             if save:
-                if userprofile.stripe_customer_id != '' and userprofile.stripe_customer_id is not None:
+                if user_profile.stripe_customer_id != '' and user_profile.stripe_customer_id is not None:
                     customer = stripe.Customer.retrieve(
-                        userprofile.stripe_customer_id)
+                        user_profile.stripe_customer_id)
                     customer.sources.create(source=token)
 
                 else:
@@ -253,9 +253,9 @@ class PaymentView(View):
                         email=self.request.user.email,
                     )
                     customer.sources.create(source=token)
-                    userprofile.stripe_customer_id = customer['id']
-                    userprofile.one_click_purchasing = True
-                    userprofile.save()
+                    user_profile.stripe_customer_id = customer['id']
+                    user_profile.one_click_purchasing = True
+                    user_profile.save()
 
             amount = int(order.get_total() * 100)
 
@@ -266,7 +266,7 @@ class PaymentView(View):
                     charge = stripe.Charge.create(
                         amount=amount,  # cents
                         currency="usd",
-                        customer=userprofile.stripe_customer_id
+                        customer=user_profile.stripe_customer_id
                     )
                 else:
                     # charge once off on the token

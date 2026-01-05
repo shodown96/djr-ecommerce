@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import (
     Item, OrderItem, Order, Payment, Coupon, Refund,
-    Address, UserProfile, Variation, ItemVariation
+    Address, Profile, Variation, ItemVariation
 )
 
 
@@ -107,4 +107,4 @@ admin.site.register(Payment, PaymentAdmin)
 admin.site.register(Coupon)
 admin.site.register(Refund)
 admin.site.register(Address, AddressAdmin)
-admin.site.register(UserProfile)
+admin.site.register(Profile)
