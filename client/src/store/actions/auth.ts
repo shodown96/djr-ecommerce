@@ -1,0 +1,166 @@
+import axios from "axios";
+import * as actionTypes from "./actionTypes";
+import host, { userDetailURL } from "../../constants";
+import { authAxios } from "../../axios";
+import { fetchCart } from "./cart";
+
+// --------- BASIC ACTIONS ---------
+
+export const authStart = () => ({
+  type: actionTypes.AUTH_START,
+});
+
+export const authSuccess = (token: string, user: any = {}) => {
+  authAxios.defaults.headers.Authorization = `Token ${token}`;
+  return {
+    type: actionTypes.AUTH_SUCCESS,
+    token,
+    user,
+  };
+};
+
+export const authFail = (error: any) => ({
+  type: actionTypes.AUTH_FAIL,
+  error,
+});
+
+export const profileUpdated = (user: any = {}) => ({
+  type: actionTypes.PROFILE_UPDATED,
+  user,
+});
+
+export const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("expiration");
+  delete authAxios.defaults.headers.Authorization;
+
+  return {
+    type: actionTypes.AUTH_LOGOUT,
+  };
+};
+
+// --------- HELPERS ---------
+
+export const checkAuthTimeout = (expirationSeconds: number) => {
+  return (dispatch: any) => {
+    setTimeout(() => {
+      dispatch(logout());
+    }, expirationSeconds * 1000);
+  };
+};
+
+// --------- AUTH FLOWS ---------
+
+export const authLogin = (username: string, password: string) => {
+  return (dispatch: any) => {
+    dispatch(authStart());
+
+    axios
+      .post(`${host}/rest-auth/login/`, { username, password })
+      .then((res) => {
+        const token = res.data.key;
+        const expiration = Date.now() + 3600 * 1000;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("expiration", expiration.toString());
+
+        dispatch(authSuccess(token));
+        dispatch(authGetDetails());
+        dispatch(fetchCart());
+        dispatch(checkAuthTimeout(3600));
+      })
+      .catch((err) => dispatch(authFail(err)));
+  };
+};
+
+export const authSignup = (
+  username: string,
+  email: string,
+  password1: string,
+  password2: string
+) => {
+  return (dispatch: any) => {
+    dispatch(authStart());
+
+    axios
+      .post(`${host}/rest-auth/registration/`, {
+        username,
+        email,
+        password1,
+        password2,
+      })
+      .then((res) => {
+        const token = res.data.key;
+        const expiration = Date.now() + 3600 * 1000;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("expiration", expiration.toString());
+
+        dispatch(authSuccess(token));
+        dispatch(authGetDetails());
+        dispatch(checkAuthTimeout(3600));
+      })
+      .catch((err) => dispatch(authFail(err)));
+  };
+};
+
+// --------- SESSION RESTORE ---------
+
+export const authCheckState = () => {
+  return (dispatch: any) => {
+    const token = localStorage.getItem("token");
+    const expiration = localStorage.getItem("expiration");
+
+    if (!token || !expiration) {
+      dispatch(logout());
+      return;
+    }
+
+    if (Number(expiration) <= Date.now()) {
+      dispatch(logout());
+      return;
+    }
+
+    dispatch(authSuccess(token));
+    dispatch(authGetDetails());
+    dispatch(fetchCart());
+
+    const remainingSeconds =
+      (Number(expiration) - Date.now()) / 1000;
+
+    dispatch(checkAuthTimeout(remainingSeconds));
+  };
+};
+
+// --------- PROFILE ---------
+
+export const authGetDetails = () => {
+  return (dispatch: any) => {
+    authAxios
+      .get(userDetailURL)
+      .then((res) => dispatch(profileUpdated(res.data)))
+      .catch((err) => dispatch(authFail(err)));
+  };
+};
+
+export const authUpdateDetails = (data: any) => {
+  return (dispatch: any) => {
+    dispatch(authStart());
+
+    authAxios
+      .put(userDetailURL, data)
+      .then((res) => dispatch(profileUpdated(res.data)))
+      .catch((err) => dispatch(authFail(err)));
+  };
+};
+
+export const authDeleteAccount = () => {
+  return (dispatch: any) => {
+    dispatch(authStart());
+
+    authAxios
+      .delete(userDetailURL)
+      .then(() => dispatch(logout()))
+      .catch((err) => dispatch(authFail(err)));
+  };
+};
