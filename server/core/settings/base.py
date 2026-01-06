@@ -89,7 +89,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "build/static")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "build"), os.path.join(BASE_DIR, "build/static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 SITE_ID = 1
@@ -99,7 +99,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
     ),
-    "EXCEPTION_HANDLER": "core.exception_handler.custom_exception_handler",
+    "EXCEPTION_HANDLER": "common.exception_handler.custom_exception_handler",
 }
 
 ACCOUNT_SIGNUP_FIELDS = ["email", "username*", "password1*", "password2*"]

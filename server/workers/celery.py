@@ -2,7 +2,7 @@ import os
 from django.conf import settings
 from celery import Celery
 
-from core.constants import ServiceDiscovery
+from common.constants import ServiceDiscovery
 from core.utilities.common import get_environment_mode
 
 env = get_environment_mode()

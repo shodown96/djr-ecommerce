@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <body style="margin:0; padding:0; font-family: Arial, Helvetica, sans-serif; background-color:#f6f8fa;">
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center" style="padding:40px 16px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; background:#ffffff; border-radius:8px; padding:32px;">
+            
+            <tr>
+              <td style="text-align:center; padding-bottom:24px;">
+                <h2 style="margin:0; color:#111827; font-size:22px;">
+                  Order Confirmed ✅
+                </h2>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="color:#374151; font-size:15px; line-height:1.6;">
+                <p style="margin:0 0 16px;">
+                  Hello <strong>{{ user_name }}</strong>,
+                </p>
+
+                <p style="margin:0 0 16px;">
+                  Your order <strong>#{{ order_id }}</strong> has been successfully completed.
+                </p>
+
+                <div style="margin:24px 0; padding:16px; background:#f9fafb; border-radius:6px;">
+                  <p style="margin:0; font-size:14px; color:#6b7280;">
+                    Order Total
+                  </p>
+                  <p style="margin:4px 0 0; font-size:20px; font-weight:bold; color:#111827;">
+                    ₦{{ total }}
+                  </p>
+                </div>
+
+                <p style="margin:24px 0 0; font-size:14px; color:#6b7280;">
+                  Thank you for shopping with us. If you have any questions, feel free to reply to this email.
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding-top:32px; text-align:center; font-size:12px; color:#9ca3af;">
+                © {{ year }} Your Store. All rights reserved.
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

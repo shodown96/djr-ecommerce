@@ -20,3 +20,21 @@ class Strings:
 
 class ServiceDiscovery:
     Name = "djr_ecommerce.workers"
+
+
+class DBTables:
+    """
+    This model represents all the tables in the database
+    """
+
+    Activity = "activity"
+    Profile = "profile"
+    Item = "item"
+    Variation = "variation"
+    ItemVariation = "item_variation"
+    Order = "order"
+    OrderItem = "order_item"
+    Address = "address"
+    Payment = "payment"
+    Coupon = "coupon"
+    Refund = "refund"

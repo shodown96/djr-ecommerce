@@ -6,4 +6,7 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
   ],
+  build: {
+    assetsDir: "static"
+  }
 })

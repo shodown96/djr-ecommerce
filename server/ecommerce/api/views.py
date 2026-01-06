@@ -298,7 +298,6 @@ class PaymentView(APIView):
         except stripe.error.RateLimitError as e:
             # Too many requests made to the API too quickly
             print(e)
-            messages.warning(self.request, "Rate limit error")
             return Response({"message": "Rate limit error."}, status=HTTP_400_BAD_REQUEST)
 
         except stripe.error.InvalidRequestError as e:
@@ -327,8 +326,6 @@ class PaymentView(APIView):
             # send an email to ourselves
             print(e)
             return Response({"message": "A serious error occurred. We have been notifed."}, status=HTTP_400_BAD_REQUEST)
-
-        return Response({"message": "Invalid data received."}, status=HTTP_400_BAD_REQUEST)
 
 
 class AddCouponView(APIView):

@@ -34,6 +34,10 @@ services:
       DATABASE_URL: postgres://ecommerce:ecommerce@postgres:5432/ecommerce
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: amqp://rabbitmq:5672//
+      MAILJET_API_KEY: your_public_key
+      MAILJET_SECRET_KEY: your_secret_key
+      MAIL_FROM_EMAIL: no-reply@yourdomain.com
+      MAIL_FROM_NAME: Your Store
     depends_on:
       - postgres
       - redis
@@ -50,6 +54,10 @@ services:
       DATABASE_URL: postgres://ecommerce:ecommerce@postgres:5432/ecommerce
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: amqp://rabbitmq:5672//
+      MAILJET_API_KEY: your_public_key
+      MAILJET_SECRET_KEY: your_secret_key
+      MAIL_FROM_EMAIL: no-reply@yourdomain.com
+      MAIL_FROM_NAME: Your Store
     depends_on:
       - backend
       - redis

@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 import uuid
+from common.constants import DBTables
 
 
 class Activity(models.Model):
@@ -76,6 +77,7 @@ class Activity(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = DBTables.PostLike
         indexes = [
             models.Index(fields=["kind", "type"]),
             models.Index(fields=["status"]),

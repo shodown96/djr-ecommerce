@@ -3,9 +3,25 @@ from kombu import Connection, Producer
 from django.conf import settings
 from events.exchange import EVENTS_EXCHANGE
 
+
 def publish_event(event_name: str, payload: dict):
+    """
+    Publish a domain event to RabbitMQ.
+
+    - event_name: the routing key (e.g. "order.completed")
+    - payload: the event data (must be JSON-serializable)
+
+    This function:
+    - Opens a connection to RabbitMQ
+    - Publishes the event to the shared events exchange
+    - Does not wait for or care about consumers
+    """
+    # Establish a connection to RabbitMQ using the configured URL
     with Connection(settings.RABBITMQ_URL) as conn:
+        # Create a producer for publishing messages
         producer = Producer(conn)
+
+        # Publish the event payload to the events exchange
         producer.publish(
             payload,
             exchange=EVENTS_EXCHANGE,
