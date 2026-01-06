@@ -28,6 +28,7 @@ class DBTables:
     """
 
     Activity = "activity"
+    Account = "account"
     Profile = "profile"
     Item = "item"
     Variation = "variation"

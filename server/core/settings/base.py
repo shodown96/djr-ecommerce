@@ -1,11 +1,18 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get(
     "SECRET_KEY", "django-insecure-1!shfi-e4ica@a3jo*d_l=r*ss8mi2i&!2b2#^8p@o=--!!72h"
 )
+
+# Encryption of the account
+ID_ENCRYPT_KEY = os.environ.get(
+    "DJANGO_ENCRYPTION_KEY", "0987654eFK92bgshdkowBXKAO822iV8PQaNEM="
+)
+
 DEBUG = True
 ALLOWED_HOSTS = ["http://localhost:5173"]
 
@@ -30,6 +37,8 @@ INSTALLED_APPS = [
     "django_cleanup.apps.CleanupConfig",
     "storages",
     "workers",
+    "common",
+    "vauth",
 ]
 
 MIDDLEWARE = [
@@ -89,7 +98,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "build"), os.path.join(BASE_DIR, "build/static")]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "build"),
+    os.path.join(BASE_DIR, "build/static"),
+]
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 SITE_ID = 1
@@ -106,6 +118,13 @@ ACCOUNT_SIGNUP_FIELDS = ["email", "username*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = {"username"}
 ACCOUNT_EMAIL_VERIFICATION = "none"
 EXCHANGE_RATE = 381.50
+
+# ACCOUNT_AUTHENTICATION_METHOD = 'email'
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_UNIQUE_EMAIL = True
+AUTH_USER_MODEL = "vauth.Account"
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -142,3 +161,23 @@ LOGGING = {
 }
 
 DEFAULT_TTL = 60 * 60 * 24  # 24 hours
+
+MAILJET_API_KEY = "your_public_key"
+MAILJET_SECRET_KEY = "your_secret_key"
+MAIL_FROM_EMAIL = "=no-reply@yourdomain.com"
+MAIL_FROM_NAME = "Your Store"
+
+
+JWT_AUTH = {
+    "JWT_AUTH_HEADER_PREFIX": "Bearer",
+    "JWT_REFRESH_TOKEN_URL": "/auth/refresh_token",
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_ALGORITHM": "HS256",
+    "JWT_SECRET_KEY": SECRET_KEY,
+    "JWT_VERIFY": True,
+    "JWT_ALLOW_REFRESH": True,
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LEEWAY": 0,
+    # setting it to one year for now
+    "JWT_EXPIRATION_DELTA": timedelta(days=365),
+}

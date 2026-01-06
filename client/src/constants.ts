@@ -13,7 +13,6 @@ export const orderSummaryURL = `${endpoint}/order-summary/`;
 export const checkoutURL = `${endpoint}/checkout/`;
 export const addCouponURL = `${endpoint}/add-coupon/`;
 export const countryListURL = `${endpoint}/countries/`;
-export const userIDURL = `${endpoint}/user-id/`;
 export const addressListURL = (addressType: string) =>
   `${endpoint}/addresses/?address_type=${addressType}`;
 export const addressCreateURL = `${endpoint}/addresses/create/`;
@@ -22,6 +21,7 @@ export const addressDeleteURL = (id: string | number) => `${endpoint}/addresses/
 export const orderItemDeleteURL = (id: string | number) => `${endpoint}/order-items/${id}/delete/`;
 export const orderItemUpdateQuantityURL = `${endpoint}/order-item/update-quantity/`;
 export const paymentListURL = `${endpoint}/payments/`;
-export const userDetailURL = `${endpoint}/user-detail/`;
+export const userIDURL = `${endpoint}/users/me/id/`;
+export const userDetailURL = `${endpoint}/users/me/`;
 export const PaystackChargeURL = `${endpoint}/paystack-charge/`;
 export const PaystackReceiveURL = `${endpoint}/paystack-receive/`;

@@ -1,4 +1,5 @@
-import os
+import os, uuid
+
 
 def get_environment_mode():
     environment = "dev"
@@ -18,3 +19,19 @@ def get_client_ip(request):
     else:
         ip = request.META.get("REMOTE_ADDR", "")
     return ip
+
+
+def is_valid(param):
+    return param is not None and param != ""
+
+
+def is_valid_form(values):
+    valid = True
+    for field in values:
+        if field == "":
+            valid = False
+    return valid
+
+
+def generate_uuid(length=14):
+    return uuid.uuid4().hex[:length]

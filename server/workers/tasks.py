@@ -1,7 +1,7 @@
 from celery import shared_task
 from ecommerce.api.serializers import Item, Order
-from core.utilities.files import image_resize
-from core.utilities.cache import acquire_idempotency_lock
+from utilities.files import image_resize
+from utilities.cache import acquire_idempotency_lock
 from integrations.mailjet import send_email
 
 

@@ -25,13 +25,14 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("docs/", schema_view.with_ui(), name="schema-swagger-ui"),
     path("api/", include("ecommerce.api.urls")),
+    path("api/", include("vauth.urls")),
     path("api/auth/", include("rest_framework.urls")),
+    re_path(r"^.*", TemplateView.as_view(template_name="index.html")),
     # path('rest-auth/', include('rest_auth.urls')),
     # path('rest-auth/registration/', include('rest_auth.registration.urls')),
-    re_path(r"^.*", TemplateView.as_view(template_name="index.html")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-from workers.tasks import ping
-ping.delay()
+# from workers.tasks import ping
+# ping.delay()

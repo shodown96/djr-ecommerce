@@ -7,9 +7,10 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, View
 from django.shortcuts import redirect
 from django.utils import timezone
-from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
-from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, Profile
-
+from ecommerce.forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
+from ecommerce.models import Item, OrderItem, Order, Address, Payment, Coupon, Refund
+from utilities.common import is_valid_form
+from vauth.models import Profile
 import random
 import string
 import stripe
@@ -26,13 +27,6 @@ def products(request):
     }
     return render(request, "products.html", context)
 
-
-def is_valid_form(values):
-    valid = True
-    for field in values:
-        if field == '':
-            valid = False
-    return valid
 
 
 class CheckoutView(View):
@@ -94,7 +88,7 @@ class CheckoutView(View):
                             self.request, "No default shipping address available")
                         return redirect('core:checkout')
                 else:
-                    print("User is entering a new shipping address")
+                    print("user is entering a new shipping address")
                     shipping_address1 = form.cleaned_data.get(
                         'shipping_address')
                     shipping_address2 = form.cleaned_data.get(
@@ -157,7 +151,7 @@ class CheckoutView(View):
                             self.request, "No default billing address available")
                         return redirect('core:checkout')
                 else:
-                    print("User is entering a new billing address")
+                    print("user is entering a new billing address")
                     billing_address1 = form.cleaned_data.get(
                         'billing_address')
                     billing_address2 = form.cleaned_data.get(

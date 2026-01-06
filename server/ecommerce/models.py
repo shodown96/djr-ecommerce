@@ -1,10 +1,11 @@
-from django.db.models.signals import post_save
+
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
 
+from common.models import BaseModel
 from common.constants import DBTables
 
 CATEGORY_CHOICES = (("S", "Shirt"), ("SW", "Sport wear"), ("OW", "Outwear"))
@@ -17,19 +18,7 @@ ADDRESS_CHOICES = (
 )
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    stripe_customer_id = models.CharField(max_length=50, blank=True, null=True)
-    one_click_purchasing = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.user.username
-
-    class Meta:
-        db_table = DBTables.Profile
-
-
-class Item(models.Model):
+class Item(BaseModel):
     title = models.CharField(max_length=100)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
@@ -62,7 +51,7 @@ class Item(models.Model):
         db_table = DBTables.Item
 
 
-class Variation(models.Model):
+class Variation(BaseModel):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)  # size
 
@@ -74,7 +63,7 @@ class Variation(models.Model):
         return self.name
 
 
-class ItemVariation(models.Model):
+class ItemVariation(BaseModel):
     variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
     value = models.CharField(max_length=50)  # S, M, L
     attachment = models.ImageField(blank=True)
@@ -87,7 +76,7 @@ class ItemVariation(models.Model):
         return self.value
 
 
-class OrderItem(models.Model):
+class OrderItem(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
@@ -115,7 +104,7 @@ class OrderItem(models.Model):
         db_table = DBTables.OrderItem
 
 
-class Order(models.Model):
+class Order(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ref_code = models.CharField(max_length=20, blank=True, null=True)
     items = models.ManyToManyField(OrderItem)
@@ -173,7 +162,7 @@ class Order(models.Model):
         db_table = DBTables.Order
 
 
-class Address(models.Model):
+class Address(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
@@ -196,7 +185,7 @@ class Address(models.Model):
         verbose_name_plural = "Addresses"
 
 
-class Payment(models.Model):
+class Payment(BaseModel):
     stripe_charge_id = models.CharField(max_length=50)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True
@@ -211,7 +200,7 @@ class Payment(models.Model):
         db_table = DBTables.Payment
 
 
-class Coupon(models.Model):
+class Coupon(BaseModel):
     code = models.CharField(max_length=15)
     amount = models.FloatField()
 
@@ -222,7 +211,7 @@ class Coupon(models.Model):
         db_table = DBTables.Coupon
 
 
-class Refund(models.Model):
+class Refund(BaseModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     reason = models.TextField()
     accepted = models.BooleanField(default=False)
