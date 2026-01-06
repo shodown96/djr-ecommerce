@@ -1,8 +1,8 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import React, { type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { authAxios } from "../axios";
-import { checkoutURL } from "../constants";
+import { axiosClient } from "../axios";
+import { API_ENDPOINTS } from "../constants/api";
 
 type Props = {
   selectedBillingAddress: any;
@@ -67,8 +67,8 @@ const StripeForm: React.FC<Props> = ({
       } else if (result.token) {
         setState({ ...state, loading: true, error: null });
 
-        authAxios
-          .post(checkoutURL, {
+        axiosClient
+          .post(API_ENDPOINTS.Orders.Checkout, {
             stripeToken: result.token.id,
             selectedBillingAddress,
             selectedShippingAddress,

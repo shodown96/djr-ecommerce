@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import {BASE_API_URL} from "../constants";
+import { BASE_API_URL } from "../constants/api";
 
 type OrderItem = {
   quantity: number;

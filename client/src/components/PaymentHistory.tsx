@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { authAxios } from "../axios";
-import { paymentListURL } from "../constants";
+import { axiosClient } from "../axios";
+import { API_ENDPOINTS } from "../constants/api";
 
 type Payment = {
   id: number | string;
@@ -30,8 +30,8 @@ const PaymentHistory: React.FC = () => {
   const handleFetchPayments = () => {
     setState((prev) => ({ ...prev, loading: true }));
 
-    authAxios
-      .get(paymentListURL)
+    axiosClient
+      .get(API_ENDPOINTS.Payments.List)
       .then((res) => {
         setState({
           payments: res.data,

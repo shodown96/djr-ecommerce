@@ -28,8 +28,6 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "corsheaders",
-    "rest_auth",
-    "rest_auth.registration",
     "rest_framework",
     "rest_framework.authtoken",
     "ecommerce",
@@ -39,6 +37,7 @@ INSTALLED_APPS = [
     "workers",
     "common",
     "vauth",
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
@@ -110,6 +109,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "EXCEPTION_HANDLER": "common.exception_handler.custom_exception_handler",
 }
@@ -181,3 +181,5 @@ JWT_AUTH = {
     # setting it to one year for now
     "JWT_EXPIRATION_DELTA": timedelta(days=365),
 }
+
+SWAGGER_USE_COMPAT_RENDERERS = False

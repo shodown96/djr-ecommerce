@@ -1,7 +1,7 @@
 import React, { type ChangeEvent, type FormEvent, useState } from "react";
 import { connect } from "react-redux";
-import { authAxios } from "../axios";
-import { addCouponURL } from "../constants";
+import { axiosClient } from "../axios";
+import { API_ENDPOINTS } from "../constants/api";
 import { fetchCart } from "../store/actions/cart";
 
 type Props = {
@@ -35,8 +35,8 @@ const CouponForm: React.FC<Props> = ({ refreshCart }) => {
   const handleAddCoupon = (couponCode: string) => {
     setState({ loading: true, success: false, error: null });
 
-    authAxios
-      .post(addCouponURL, { code: couponCode })
+    axiosClient
+      .post(API_ENDPOINTS.Orders.AddCoupon, { code: couponCode })
       .then(() => {
         setState({ loading: false, success: true, error: null });
         refreshCart();

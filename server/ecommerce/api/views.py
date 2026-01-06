@@ -33,6 +33,8 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
     UpdateAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView
 )
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -355,32 +357,16 @@ class CountryListView(APIView):
         return Response(countries, status=HTTP_200_OK)
 
 
-class AddressListView(ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = AddressSerializer
 
-    def get_queryset(self):
-        address_type = self.request.query_params.get("address_type", None)
-        qs = Address.objects.all()
-        if address_type is None:
-            return qs
-        return qs.filter(user=self.request.user, address_type=address_type)
-
-
-class AddressCreateView(CreateAPIView):
+class AddressListCreateAPIView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = AddressSerializer
     queryset = Address.objects.all()
 
 
-class AddressUpdateView(UpdateAPIView):
+class AddressRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = AddressSerializer
-    queryset = Address.objects.all()
-
-
-class AddressDeleteView(DestroyAPIView):
-    permission_classes = (IsAuthenticated,)
     queryset = Address.objects.all()
 
 

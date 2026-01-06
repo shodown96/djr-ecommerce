@@ -1,8 +1,8 @@
 import PaystackPop from "@paystack/inline-js";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { authAxios } from "../axios";
-import { PaystackReceiveURL } from "../constants";
+import { axiosClient } from "../axios";
+import { API_ENDPOINTS } from "../constants/api";
 
 const paystackInstance = new PaystackPop();
 
@@ -64,8 +64,8 @@ const PaystackForm: React.FC<Props> = ({
       onSuccess: (res: any) => {
         setState({ ...state, loading: true, error: null });
 
-        authAxios
-          .post(PaystackReceiveURL, {
+        axiosClient
+          .post(API_ENDPOINTS.Paystack.Receive, {
             ...res,
             selectedBillingAddress,
             selectedShippingAddress,

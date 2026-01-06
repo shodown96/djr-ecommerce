@@ -1,10 +1,8 @@
 from django.urls import path
 from ecommerce.api.views import (
     AddCouponView,
-    AddressCreateView,
-    AddressDeleteView,
-    AddressListView,
-    AddressUpdateView,
+    AddressListCreateAPIView,
+    AddressRetrieveUpdateDestroyAPIView,
     AddToCartView,
     CountryListView,
     ItemDetailView,
@@ -20,27 +18,28 @@ from ecommerce.api.views import (
 
 urlpatterns = [
     path("countries/", CountryListView.as_view(), name="country-list"),
-    path("addresses/", AddressListView.as_view(), name="address-list"),
-    path("addresses/create/", AddressCreateView.as_view(), name="address-create"),
-    path("addresses/<pk>/update/", AddressUpdateView.as_view(), name="address-update"),
-    path("addresses/<pk>/delete/", AddressDeleteView.as_view(), name="address-delete"),
+    
+    path("addresses/", AddressListCreateAPIView.as_view(), name="address-list-create"),
+    path("addresses/<pk>/", AddressRetrieveUpdateDestroyAPIView.as_view(), name="address-retrieve-update-destroy"),
+    
     path("products/", ItemListView.as_view(), name="product-list"),
     path("products/<pk>/", ItemDetailView.as_view(), name="product-detail"),
-    path("add-to-cart/", AddToCartView.as_view(), name="add-to-cart"),
-    path("order-summary/", OrderDetailView.as_view(), name="order-summary"),
-    path("checkout/", PaymentView.as_view(), name="checkout"),
-    path("add-coupon/", AddCouponView.as_view(), name="add-coupon"),
+    
+    path("orders/add-to-cart/", AddToCartView.as_view(), name="add-to-cart"),
+    path("orders/order-summary/", OrderDetailView.as_view(), name="order-summary"),
+    path("orders/checkout/", PaymentView.as_view(), name="checkout"),
+    path("orders/add-coupon/", AddCouponView.as_view(), name="add-coupon"),
     path(
-        "order-items/<pk>/delete/",
+        "orders/order-items/<pk>/delete/",
         OrderItemDeleteView.as_view(),
         name="order-item-delete",
     ),
     path(
-        "order-item/update-quantity/",
+        "orders/order-item/update-quantity/",
         OrderQuantityUpdateView.as_view(),
         name="order-item-update-quantity",
     ),
     path("payments/", PaymentListView.as_view(), name="payment-list"),
-    path("paystack-charge/", PaystackChargeView.as_view(), name="paystack"),
-    path("paystack-receive/", PaystackRecieveView.as_view(), name="paystack-receive"),
+    path("paystack/charge/", PaystackChargeView.as_view(), name="paystack-charge"),
+    path("paystack/receive/", PaystackRecieveView.as_view(), name="paystack-receive"),
 ]

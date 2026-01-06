@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { authAxios } from "../axios";
+import { axiosClient } from "../axios";
 import AddressForm from "../components/AddressForm";
 import PaymentHistory from "../components/PaymentHistory";
 import ProfileForm from "../components/ProfileForm";
 import {
-    addressDeleteURL,
-    addressListURL,
-    countryListURL,
-} from "../constants";
+  API_ENDPOINTS
+} from "../constants/api";
 
 const UPDATE_FORM = "UPDATE_FORM";
 const CREATE_FORM = "CREATE_FORM";
@@ -79,8 +77,8 @@ const Profile = ({ isAuthenticated, user }: any) => {
     }));
 
   const handleFetchCountries = () => {
-    authAxios
-      .get(countryListURL)
+    axiosClient
+      .get(API_ENDPOINTS.Countries.List)
       .then((res) => {
         setCountries(handleFormatCountries(res.data));
       })
@@ -95,8 +93,8 @@ const Profile = ({ isAuthenticated, user }: any) => {
     const type =
       state.activeItem === "billingAddress" ? "B" : "S";
 
-    authAxios
-      .get(addressListURL(type))
+    axiosClient
+      .get(API_ENDPOINTS.Addresses.ListByAddressType(type))
       .then((res) => {
         setState((s) => ({
           ...s,
@@ -114,9 +112,9 @@ const Profile = ({ isAuthenticated, user }: any) => {
       );
   };
 
-  const handleDeleteAddress = (addressID: number) => {
-    authAxios
-      .delete(addressDeleteURL(addressID))
+  const handleDeleteAddress = (addressID: string) => {
+    axiosClient
+      .delete(API_ENDPOINTS.Addresses.Delete(addressID))
       .then(() => handleFetchAddresses())
       .catch((err) =>
         setState((s) => ({ ...s, error: err }))

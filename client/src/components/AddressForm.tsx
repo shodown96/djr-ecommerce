@@ -1,9 +1,8 @@
 import React, { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
-import { authAxios } from "../axios";
+import { axiosClient } from "../axios";
 import {
-  addressCreateURL,
-  addressUpdateURL,
-} from "../constants";
+  API_ENDPOINTS
+} from "../constants/api";
 
 const UPDATE_FORM = "UPDATE_FORM";
 
@@ -115,8 +114,8 @@ const AddressForm: React.FC<Props> = (props) => {
   };
 
   const handleCreateAddress = () => {
-    authAxios
-      .post(addressCreateURL, {
+    axiosClient
+      .post(API_ENDPOINTS.Addresses.Create, {
         ...formData,
         user: userID,
         address_type: activeItem === "billingAddress" ? "B" : "S",
@@ -136,8 +135,8 @@ const AddressForm: React.FC<Props> = (props) => {
   };
 
   const handleUpdateAddress = () => {
-    authAxios
-      .put(addressUpdateURL(formData.id), {
+    axiosClient
+      .put(API_ENDPOINTS.Addresses.Update(formData.id), {
         ...formData,
         user: userID,
         address_type: activeItem === "billingAddress" ? "B" : "S",

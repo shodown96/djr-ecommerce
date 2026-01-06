@@ -1,5 +1,5 @@
-import { authAxios } from "../../axios";
-import { orderSummaryURL } from "../../constants";
+import { axiosClient } from "../../axios";
+import { orderSummaryURL } from "../../constants/api";
 import { CART_FAIL, CART_START, CART_SUCCESS } from "./actionTypes";
 
 // --------- BASIC ACTIONS ---------
@@ -24,7 +24,7 @@ export const fetchCart = () => {
   return (dispatch: any) => {
     dispatch(cartStart());
 
-    authAxios
+    axiosClient
       .get(orderSummaryURL)
       .then((res) => {
         dispatch(cartSuccess(res.data));

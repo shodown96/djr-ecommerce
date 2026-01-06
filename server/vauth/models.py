@@ -1,7 +1,12 @@
 from common.constants import DBTables
 from common.models import BaseModel
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin,
+    UserManager,
+    AbstractUser,
+)
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from integrations.mailjet import send_email
@@ -37,7 +42,7 @@ class Account(BaseModel, AbstractBaseUser, PermissionsMixin):
     blocked_at = models.DateTimeField(blank=True, null=True)
 
     USERNAME_FIELD = "username"
-
+    objects = UserManager()
     # def email_user(self, subject, context):
     #     """Send an email to this user."""
     #     send_email(self.email, subject, "", context)

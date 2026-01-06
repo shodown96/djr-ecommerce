@@ -2,12 +2,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { authAxios } from "../axios";
+import { axiosClient } from "../axios";
 import {
-    addToCartURL,
-    orderItemDeleteURL,
-    productDetailURL,
-} from "../constants";
+  API_ENDPOINTS
+} from "../constants/api";
 import { fetchCart } from "../store/actions/cart";
 import ErrorPage from "./ErrorPage";
 
@@ -45,7 +43,7 @@ const ProductDetail: React.FC<Props> = ({
     setState((s) => ({ ...s, loading: true }));
 
     axios
-      .get(productDetailURL(productID!))
+      .get(API_ENDPOINTS.Products.Detail(productID!))
       .then((res) => {
         setState((s) => ({
           ...s,
@@ -87,8 +85,8 @@ const ProductDetail: React.FC<Props> = ({
 
     const variations = handleFormatData(state.formData);
 
-    authAxios
-      .post(addToCartURL, { slug, variations })
+    axiosClient
+      .post(API_ENDPOINTS.Orders.AddToCart, { slug, variations })
       .then(() => {
         refreshCart();
         setState((s) => ({
@@ -116,8 +114,8 @@ const ProductDetail: React.FC<Props> = ({
       success: false,
     }));
 
-    authAxios
-      .post(addToCartURL, { slug })
+    axiosClient
+      .post(API_ENDPOINTS.Orders.AddToCart, { slug })
       .then(() => {
         refreshCart();
         setState((s) => ({
@@ -164,8 +162,8 @@ const ProductDetail: React.FC<Props> = ({
     const id = getOrderItem(itemID);
     if (!id) return;
 
-    authAxios
-      .delete(orderItemDeleteURL(id))
+    axiosClient
+      .delete(API_ENDPOINTS.Orders.DeleteOrderItem(id))
       .then(() => refreshCart())
       .catch(console.error);
   };

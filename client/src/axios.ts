@@ -1,15 +1,15 @@
 import axios from "axios";
-import { endpoint } from "./constants";
+import { API_ENDPOINTS } from "./constants/api";
 
-export const authAxios = axios.create({
-  baseURL: endpoint,
+export const axiosClient = axios.create({
+  baseURL: API_ENDPOINTS.Base,
   headers: {
     Authorization: `Token ${localStorage.getItem("token")}`
   }
 });
 
 // Add a request interceptor
-authAxios.interceptors.request.use(function (config) {
+axiosClient.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
   config.headers.Authorization = `Token ${token}`;
 

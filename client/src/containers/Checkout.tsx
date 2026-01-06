@@ -1,12 +1,12 @@
 import React, { type ChangeEvent, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, redirect } from "react-router-dom";
-import { authAxios } from "../axios";
+import { axiosClient } from "../axios";
 import CouponForm from "../components/CouponForm";
 import OrderPreview from "../components/OrderPreview";
 import PaystackForm from "../components/PaystackForm";
 import StripeForm from "../components/StripeForm";
-import { addressListURL } from "../constants";
+import { API_ENDPOINTS } from "../constants/api";
 import { fetchCart } from "../store/actions/cart";
 
 type AddressOption = {
@@ -69,8 +69,8 @@ const Checkout: React.FC<Props> = ({
     const handleFetchBillingAddresses = () => {
         setState((prev) => ({ ...prev, loading: true }));
 
-        authAxios
-            .get(addressListURL("B"))
+        axiosClient
+            .get(API_ENDPOINTS.Addresses.ListByAddressType("B"))
             .then((res) => {
                 setBillingAddresses(
                     res.data.map((a: any) => ({
@@ -94,8 +94,8 @@ const Checkout: React.FC<Props> = ({
     const handleFetchShippingAddresses = () => {
         setState((prev) => ({ ...prev, loading: true }));
 
-        authAxios
-            .get(addressListURL("S"))
+        axiosClient
+            .get(API_ENDPOINTS.Addresses.ListByAddressType("S"))
             .then((res) => {
                 setShippingAddresses(
                     res.data.map((a: any) => ({

@@ -1,10 +1,10 @@
 import axios from "axios";
-import { authAxios } from "../../axios";
+import { axiosClient } from "../../axios";
 import {
   loginURL,
   signupURL,
   userDetailURL
-} from "../../constants";
+} from "../../constants/api";
 import * as actionTypes from "./actionTypes";
 import { fetchCart } from "./cart";
 
@@ -15,7 +15,7 @@ export const authStart = () => ({
 });
 
 export const authSuccess = (token: string, user: any = {}) => {
-  authAxios.defaults.headers.Authorization = `Token ${token}`;
+  axiosClient.defaults.headers.Authorization = `Token ${token}`;
   return {
     type: actionTypes.AUTH_SUCCESS,
     token,
@@ -36,7 +36,7 @@ export const profileUpdated = (user: any = {}) => ({
 export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("expiration");
-  delete authAxios.defaults.headers.Authorization;
+  delete axiosClient.defaults.headers.Authorization;
 
   return {
     type: actionTypes.AUTH_LOGOUT,
@@ -140,7 +140,7 @@ export const authCheckState = () => {
 
 export const authGetDetails = () => {
   return (dispatch: any) => {
-    authAxios
+    axiosClient
       .get(userDetailURL)
       .then((res) => dispatch(profileUpdated(res.data)))
       .catch((err) => dispatch(authFail(err)));
@@ -151,7 +151,7 @@ export const authUpdateDetails = (data: any) => {
   return (dispatch: any) => {
     dispatch(authStart());
 
-    authAxios
+    axiosClient
       .put(userDetailURL, data)
       .then((res) => dispatch(profileUpdated(res.data)))
       .catch((err) => dispatch(authFail(err)));
@@ -162,7 +162,7 @@ export const authDeleteAccount = () => {
   return (dispatch: any) => {
     dispatch(authStart());
 
-    authAxios
+    axiosClient
       .delete(userDetailURL)
       .then(() => dispatch(logout()))
       .catch((err) => dispatch(authFail(err)));

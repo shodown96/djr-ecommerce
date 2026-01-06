@@ -17,14 +17,17 @@ class AuthenticationError(APIException, Exception):
     """
 
     status_code = status.HTTP_401_UNAUTHORIZED
-    detail = ErrorMessages.AuthenticationFailed
+    message = ErrorMessages.AuthenticationFailed
+    detail = None
 
-    def __init__(self, detail=None):
+    def __init__(self, message=None, detail=None):
+        if message:
+            self.message = message
         if detail:
             self.detail = detail
 
     def __str__(self):
-        return str(self.detail)
+        return str(self.message)
 
 
 class ForbiddenError(APIException):
@@ -34,14 +37,17 @@ class ForbiddenError(APIException):
     """
 
     status_code = status.HTTP_403_FORBIDDEN
-    detail = ErrorMessages.Forbidden
+    message = ErrorMessages.Forbidden
+    detail = None
 
-    def __init__(self, detail=None):
+    def __init__(self, message=None, detail=None):
+        if message:
+            self.message = message
         if detail:
             self.detail = detail
 
     def __str__(self):
-        return str(self.detail)
+        return str(self.message)
 
 
 class NotFoundError(APIException):
@@ -51,14 +57,17 @@ class NotFoundError(APIException):
     """
 
     status_code = status.HTTP_404_NOT_FOUND
-    detail = ErrorMessages.NotFound
+    message = ErrorMessages.NotFound
+    detail = None
 
-    def __init__(self, detail=None):
+    def __init__(self, message=None, detail=None):
+        if message:
+            self.message = message
         if detail:
             self.detail = detail
 
     def __str__(self):
-        return str(self.detail)
+        return str(self.message)
 
 
 class BadRequestError(APIException):
@@ -68,14 +77,17 @@ class BadRequestError(APIException):
     """
 
     status_code = status.HTTP_400_BAD_REQUEST
-    detail = ErrorMessages.BadRequest
+    message = ErrorMessages.BadRequest
+    detail = None
 
-    def __init__(self, detail=None):
+    def __init__(self, message=None, detail=None):
+        if message:
+            self.message = message
         if detail:
             self.detail = detail
 
     def __str__(self):
-        return str(self.detail)
+        return str(self.message)
 
 
 class ServiceUnavailable(APIException):
@@ -84,11 +96,14 @@ class ServiceUnavailable(APIException):
     """
 
     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-    detail = ErrorMessages.AuthenticationFailed
+    message = ErrorMessages.AuthenticationFailed
+    detail = None
 
-    def __init__(self, detail=None):
+    def __init__(self, message=None, detail=None):
+        if message:
+            self.message = message
         if detail:
             self.detail = detail
 
     def __str__(self):
-        return str(self.detail)
+        return str(self.message)

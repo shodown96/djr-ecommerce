@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { authAxios } from "../axios";
-import {
-    addToCartURL,
-    orderItemDeleteURL,
-    orderItemUpdateQuantityURL,
-} from "../constants";
+import { axiosClient } from "../axios";
+import { API_ENDPOINTS } from "../constants/api";
 import { fetchCart } from "../store/actions/cart";
 
 type OrderItem = {
-  id: number;
+  id: string;
   quantity: number;
   final_price: number;
   item: {
@@ -20,7 +16,7 @@ type OrderItem = {
     discount_price?: number;
   };
   item_variations: {
-    id: number;
+    id: string;
     variation: { name: string };
     value: string;
   }[];
@@ -79,8 +75,8 @@ const OrderSummary: React.FC<Props> = ({
     setState({ loading: true, error: null });
     const variations = handleFormatData(itemVariations);
 
-    authAxios
-      .post(addToCartURL, { slug, variations })
+    axiosClient
+      .post(API_ENDPOINTS.Orders.AddToCart, { slug, variations })
       .then(() => {
         refreshCart();
         setState({ loading: false, error: null });
@@ -91,15 +87,15 @@ const OrderSummary: React.FC<Props> = ({
   };
 
   const handleRemoveQuantityFromCart = (slug: string) => {
-    authAxios
-      .post(orderItemUpdateQuantityURL, { slug })
+    axiosClient
+      .post(API_ENDPOINTS.Orders.UpdateOrderItemQuantity, { slug })
       .then(() => refreshCart())
       .catch((err) => setState({ ...state, error: err }));
   };
 
-  const handleRemoveItem = (itemID: number) => {
-    authAxios
-      .delete(orderItemDeleteURL(itemID))
+  const handleRemoveItem = (itemID: string) => {
+    axiosClient
+      .delete(API_ENDPOINTS.Orders.DeleteOrderItem(itemID))
       .then(() => refreshCart())
       .catch((err) => setState({ ...state, error: err }));
   };

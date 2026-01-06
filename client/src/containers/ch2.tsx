@@ -1,14 +1,13 @@
-import React, { useEffect, useState, type FormEvent } from "react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import React, { useEffect, useState, type FormEvent } from "react";
 import { connect } from "react-redux";
 import { Link, redirect } from "react-router-dom";
-import { authAxios } from "../axios";
+import { axiosClient } from "../axios";
 import CouponForm from "../components/CouponForm";
 import OrderPreview from "../components/OrderPreview";
 import {
-  addressListURL,
-  checkoutURL,
-} from "../constants";
+  API_ENDPOINTS
+} from "../constants/api";
 
 type AddressOption = {
   key: string | number;
@@ -66,8 +65,8 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
   const handleFetchBillingAddresses = () => {
     setState((prev) => ({ ...prev, loading: true }));
 
-    authAxios
-      .get(addressListURL("B"))
+    axiosClient
+      .get(API_ENDPOINTS.Addresses.ListByAddressType("B"))
       .then((res) => {
         setBillingAddresses(
           res.data.map((a: any) => ({
@@ -91,8 +90,8 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
   const handleFetchShippingAddresses = () => {
     setState((prev) => ({ ...prev, loading: true }));
 
-    authAxios
-      .get(addressListURL("S"))
+    axiosClient
+      .get(API_ENDPOINTS.Addresses.ListByAddressType("S"))
       .then((res) => {
         setShippingAddresses(
           res.data.map((a: any) => ({
@@ -134,8 +133,8 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
           loading: false,
         }));
       } else if (result.token) {
-        authAxios
-          .post(checkoutURL, {
+        axiosClient
+          .post(API_ENDPOINTS.Orders.Checkout, {
             stripeToken: result.token.id,
             selectedBillingAddress: state.selectedBillingAddress,
             selectedShippingAddress: state.selectedShippingAddress,
@@ -248,7 +247,7 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
         )}
 
         {billingAddresses.length < 1 ||
-        shippingAddresses.length < 1 ? (
+          shippingAddresses.length < 1 ? (
           <p>
             You need to add addresses before you can complete your
             purchase

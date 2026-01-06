@@ -39,3 +39,61 @@ class DBTables:
     Payment = "payment"
     Coupon = "coupon"
     Refund = "refund"
+    
+class AppExceptions:
+    """
+    This model represents all the exceptions generated bu the system as a result of errors
+    that occur during processing of the input.
+    """
+
+    @classmethod
+    def authentication_error(self):
+        return {
+            "name": "AuthenticationError",
+            "code": 401,
+            "message": ErrorMessages.AuthenticationFailed,
+        }
+
+    @classmethod
+    def bad_request_error(self):
+        return {
+            "name": "BadRequestError",
+            "code": 400,
+            "message": ErrorMessages.BadRequest,
+        }
+
+    @classmethod
+    def forbidden_error(self):
+        return {
+            "name": "ForbiddenError",
+            "code": 403,
+            "message": ErrorMessages.Forbidden,
+        }
+
+    @classmethod
+    def not_found_error(self):
+        return {
+            "name": "NotFoundError",
+            "code": 404,
+            "message": ErrorMessages.NotFound,
+        }
+
+    @classmethod
+    def internal_server_error(self):
+        return {
+            "name": "InternalServerError",
+            "code": 500,
+            "message": ErrorMessages.InternalError,
+        }
+        
+EXCEPTION_TYPES = {
+    400: AppExceptions.bad_request_error(),
+    401: AppExceptions.authentication_error(),
+    404: AppExceptions.not_found_error(),
+    500: AppExceptions.internal_server_error(),
+}
+
+class EnvironmentModes:
+    Development = "dev"
+    Production = "prod"
+    Staging = "staging"
