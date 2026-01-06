@@ -1,6 +1,8 @@
 # Django + React Ecommerce (Distributed Architecture)
 
-This repository contains an ecommerce application built with **Django** and **React**, extended with a **distributed, event-driven backend architecture**.
+This repository contains an ecommerce application built with **Django** and **React**, extended with a **distributed, event-driven backend architecture**. 
+
+**⚠️ This repository is an old project, re-purposed to showcase simple distributed systems. FE+BE integration not fully tested yet**
 
 The backend uses **Django REST Framework** and is enhanced with:
 - **Celery** for background task processing
