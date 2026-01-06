@@ -10,7 +10,7 @@ The backend uses **Django REST Framework** and is enhanced with:
 - **RabbitMQ** as a domain event bus
 - **Kombu** for event publishing and consumption
 
-The frontend is built with **React, Redux, and MDB**.
+The frontend is built with **React, Redux, and Tailwind**.
 
 ---
 
@@ -28,15 +28,16 @@ The frontend is built with **React, Redux, and MDB**.
 ## Backend Setup
 
 ```bash
-cd server
 python -m venv .venv
 source .venv/bin/activate
+cd server
 pip install -r requirements.txt
 python manage.py runserver
 ```
 
 ## Run background process
 ```bash
+cd server
 celery -A project worker -l info
 python manage.py run_notifications_consumer
 ```
