@@ -120,40 +120,6 @@ export const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* New products */}
-        <section>
-          <h4 className="my-10 text-center text-xl font-semibold">
-            New products
-          </h4>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { title: "Round mirror", price: "$55.00", img: "58.jpg" },
-              { title: "Small wicker basket", price: "$9.00", img: "59.jpg" },
-              { title: "Ceramic hare", price: "$29.00", img: "60.jpg" },
-            ].map((p, i) => (
-              <div key={i} className="text-center">
-                <img
-                  src={`https://mdbootstrap.com/img/Photos/Horizontal/Interior/img(${p.img}`}
-                  className="rounded shadow"
-                  alt={p.title}
-                />
-                <h5 className="mt-4 font-semibold">{p.title}</h5>
-                <p className="mb-3">{p.price}</p>
-
-                <div className="flex justify-center gap-2">
-                  <button className="rounded bg-gray-800 px-3 py-1 text-white text-sm">
-                    Add to cart
-                  </button>
-                  <button className="rounded bg-red-600 px-3 py-1 text-white text-sm">
-                    ♥
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* Testimonials */}
         <section className="my-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
