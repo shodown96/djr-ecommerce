@@ -1,28 +1,12 @@
-FROM node:20-alpine AS builder
+FROM node:22-slim
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
 RUN npm install
 
 COPY . .
-RUN npm run build
 
-FROM alpine:3.19
+EXPOSE 5173
 
-WORKDIR /build
-COPY --from=builder /app/dist .
-
-
-# FROM node:20-alpine
-
-# WORKDIR /app
-
-# COPY package*.json ./
-# RUN npm install
-
-# COPY . .
-
-# EXPOSE 5173
-
-# CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev"]

@@ -3,10 +3,12 @@ import { axiosClient } from "../axios";
 import { API_ENDPOINTS } from "../constants/api";
 
 type Payment = {
-  id: number | string;
+  id: string;
+  api_id: string;
   amount: number;
   reference: string;
-  timestamp: string;
+  paid_at: string;
+  provider: string;
 };
 
 type State = {
@@ -67,11 +69,11 @@ const PaymentHistory: React.FC = () => {
             <tr key={i} className="odd:bg-white even:bg-gray-50">
               <td className="border px-4 py-2">{p.id}</td>
               <td className="border px-4 py-2">
-                {p.reference.includes("paystack") ? "₦" : "$"} {p.amount}
+                {p.provider.includes("paystack") ? "₦" : "$"} {p.amount}
               </td>
               <td className="border px-4 py-2">{p.reference}</td>
               <td className="border px-4 py-2">
-                {new Date(p.timestamp).toUTCString()}
+                {new Date(p.paid_at).toUTCString()}
               </td>
             </tr>
           ))}

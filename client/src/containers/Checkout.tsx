@@ -160,7 +160,7 @@ const Checkout: React.FC<Props> = ({
     };
 
     if (!authenticated) throw redirect("/sign-in");
-    if (!cart || cart.order_items?.length < 1) throw redirect("/");
+    if ((!cart || !cart.order_items?.length) && !state.success) throw redirect("/");
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">

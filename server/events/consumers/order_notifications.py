@@ -43,6 +43,12 @@ def consume_order_events():
     - Blocks and waits for events indefinitely
     """
     with Connection(settings.RABBITMQ_URL) as conn:
+        # Ensure the shared events exchange exists
+        EVENTS_EXCHANGE(conn).declare()
+
+        # Ensure the notifications queue exists and is bound
+        queue(conn).declare()
+
         with Consumer(conn, queues=[queue], callbacks=[handle_message]):
             # Continuously wait for and process incoming events
             while True:

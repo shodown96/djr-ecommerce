@@ -188,7 +188,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
-        fields = ("id", "amount", "timestamp", "reference")
+        fields = ["id", "amount", "paid_at", "reference", "provider"]
 
     def get_reference(self, obj):
         return obj.api_id

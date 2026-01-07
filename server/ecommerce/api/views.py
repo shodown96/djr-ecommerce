@@ -1,5 +1,6 @@
 import datetime
 import json
+from uuid import UUID
 
 import requests
 import stripe
@@ -200,8 +201,8 @@ class PaymentView(APIView):
         if (
             not is_valid(billing_address_id)
             or not is_valid(shipping_address_id)
-            or int(billing_address_id) not in addresses
-            or int(shipping_address_id) not in addresses
+            or billing_address_id not in addresses
+            or shipping_address_id not in addresses
         ):
             raise BadRequestError("Please fill in your appropiate addresses.")
 
@@ -401,17 +402,17 @@ class PaystackChargeView(APIView):
         if (
             not is_valid(billing_address_id)
             or not is_valid(shipping_address_id)
-            or int(billing_address_id) not in addresses
-            or int(shipping_address_id) not in addresses
+            or UUID(billing_address_id) not in addresses
+            or UUID(shipping_address_id) not in addresses
         ):
-            raise BadRequestError("Please fill in your appropiate addresses.").send()
+            raise BadRequestError("Please fill in your appropiate addresses.")
 
         billing_address = Address.objects.get(id=billing_address_id)
         shipping_address = Address.objects.get(id=shipping_address_id)
         if not order_qs.exists():
             raise BadRequestError(
                 "Order not found, you've probably checked out already."
-            ).send()
+            )
 
         order = order_qs[0]
         amount = int(order.get_total() * EXCHANGE_RATE) * 100
@@ -450,7 +451,7 @@ class PaystackChargeView(APIView):
                 user=Account.objects.get(is_superuser=True),
                 amount=(order.get_total() * EXCHANGE_RATE),
                 provider="paystack",
-                timestamp=datetime.datetime.fromisoformat(
+                paid_at=datetime.datetime.fromisoformat(
                     res["data"]["paid_at"][:-1] + "+00:00"
                 ),
             ).save()
@@ -471,7 +472,7 @@ class PaystackChargeView(APIView):
             del res["data"]["authorization"]
             del res["data"]["customer"]
             return SuccessResponse(res, "Payment Successful").send()
-        raise BadRequestError("Payment Error", res).send()
+        raise BadRequestError("Payment Error", res)
 
 
 class PaystackRecieveView(APIView):
@@ -485,21 +486,22 @@ class PaystackRecieveView(APIView):
         addresses = list(
             Address.objects.filter(user=request.user).values_list("id", flat=True)
         )
+        print(addresses, addresses[0], billing_address_id in addresses)
         # change tis to accomadate empty id's
         if (
             not is_valid(billing_address_id)
             or not is_valid(shipping_address_id)
-            or int(billing_address_id) not in addresses
-            or int(shipping_address_id) not in addresses
+            or UUID(billing_address_id) not in addresses
+            or UUID(shipping_address_id) not in addresses
         ):
-            raise BadRequestError("Please fill in your appropiate addresses.").send()
+            raise BadRequestError("Please fill in your appropiate addresses.")
 
         billing_address = Address.objects.get(id=billing_address_id)
         shipping_address = Address.objects.get(id=shipping_address_id)
         if not order_qs.exists():
             raise BadRequestError(
                 "Order not found, you've probably checked out already."
-            ).send()
+            )
 
         order = order_qs[0]
         amount = int(order.get_total() * EXCHANGE_RATE) * 100
@@ -512,7 +514,7 @@ class PaystackRecieveView(APIView):
                 amount=order.get_total() * EXCHANGE_RATE,
                 api_id=str(info["reference"]),
                 provider="paystack",
-                timestamp=datetime.datetime.now(),
+                paid_at=datetime.datetime.now(),
             ).save()
             order_items = order.items.all()
             order_items.update(ordered=True)
@@ -534,7 +536,7 @@ class PaystackRecieveView(APIView):
                 },
             )
             return SuccessResponse(None, "Payment Successful").send()
-        raise BadRequestError(None, "Payment Error").send()
+        raise BadRequestError(None, "Payment Error")
 
 
 # message: "Approved"

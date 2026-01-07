@@ -1,7 +1,7 @@
 import React, { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import { authLogin } from "../store/actions/auth";
+import { authSignIn } from "../store/actions/auth";
 
 type Props = {
   loading: boolean;
@@ -110,7 +110,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
   login: (username: string, password: string) =>
-    dispatch(authLogin(username, password)),
+    dispatch(authSignIn(username, password)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

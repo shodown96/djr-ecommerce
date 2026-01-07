@@ -9,7 +9,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 CORS_ORIGIN_WHITELIST = (
     'https://djr-ecommerce.herokuapp.com',
-    # 'http://localhost:3000',
 )
 
 
@@ -45,14 +44,25 @@ AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("DB_NAME", "ecommerce"),
+        "USER": os.environ.get("DB_USER", "ecommerce"),
+        "PASSWORD": os.environ.get("DB_PASS", "ecommerce"),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", 5432),
+        "AUTO_CREATE": True,
+    }
+}
 
-# LOGGING = {
-#     "version": 1,
-#     "handlers": {
-#         "console": {"class": "logging.StreamHandler"},
-#     },
-#     "root": {
-#         "handlers": ["console"],
-#         "level": "INFO",
-#     },
-# }
+LOGGING = {
+    "version": 1,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}

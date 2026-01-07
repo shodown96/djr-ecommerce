@@ -60,7 +60,6 @@ def create_api_token(token_params: Dict[str, str], is_refresh: bool = False):
 #     authentication of the account and logs out the request, once this is called on a JWT
 #     the token is invalidated.
 #     """
-#     # its an investor account so invalidated its token
 #     app_tokens = APIToken.objects.filter(account=account, expired=False)
 #     if not app_tokens:
 #         raise BadRequestError()

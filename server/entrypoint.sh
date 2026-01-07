@@ -1,12 +1,17 @@
-# backend/entrypoint.sh
 #!/bin/sh
+set -e
 
+echo "Starting Django container..."
+
+echo "Applying migrations..."
+python manage.py migrate --noinput
+
+# If running in production, Collect static
 if [ "$ENVIRONMENT" = "production" ]; then
-  mkdir -p /app/templates
-  cp /app/static/frontend/index.html /app/templates/index.html
+    echo "Running in production mode"
+    echo "Collecting static files..."
+    python manage.py collectstatic --noinput
 fi
 
-python manage.py migrate --noinput
-python manage.py collectstatic --noinput
-
+echo "Starting server..."
 exec "$@"

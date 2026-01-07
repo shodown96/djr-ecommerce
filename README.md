@@ -2,13 +2,14 @@
 
 This repository contains an ecommerce application built with **Django** and **React**, extended with a **distributed, event-driven backend architecture**. 
 
-**⚠️ This repository is an old project, re-purposed to showcase simple distributed systems.**
+**⚠️ This repository is an old project, re-purposed to showcase simple distributed architecture.**
 
 The backend uses **Django REST Framework** and is enhanced with:
 - **Celery** for background task processing
 - **Redis** for task buffering and caching
 - **RabbitMQ** as a domain event bus
 - **Kombu** for event publishing and consumption
+- **Commands** for seeding and running consumer threads
 
 The frontend is built with **React, Redux, and Tailwind**.
 
@@ -62,5 +63,31 @@ npm start
 ```
 
 
-## Docker
-Not tested yet
+## Docker (WIP)
+
+### Local (development)
+
+```bash
+# 1. Build frontend
+sh ./scripts/build_client.sh
+
+# 2. Merge environemnt variables
+sh ./scripts/build_client.sh
+
+# 3. Run local stack
+docker compose up --build
+```
+
+### Production
+
+```bash
+# 1. Build frontend
+sh ./scripts/build_client.sh
+
+# 2. Merge environemnt variables
+sh ./scripts/build_client.sh
+
+# 2. Run production stack
+docker compose -f docker-compose.prod.yml up -d
+```
+<!-- docker compose down -v -->

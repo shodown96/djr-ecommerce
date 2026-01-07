@@ -1,13 +1,10 @@
-# docker-compose.prod.yml (PRODUCTION)
-version: "3.9"
-
 services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_DB: ecommerce
-      POSTGRES_USER: ecommerce
-      POSTGRES_PASSWORD: ecommerce
+      POSTGRES_DB: ${DB_NAME:?DB_NAME is required}
+      POSTGRES_USER: ${DB_USER:?DB_USER is required}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -17,26 +14,11 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
 
-  frontend_build:
-    build:
-      context: ./frontend
-    volumes:
-      - frontend_build:/build
-
   backend:
-    build: ./backend
+    build: ./server
+    image: djrecommerce-server
     environment:
       ENVIRONMENT: production
-      DATABASE_URL: postgres://ecommerce:ecommerce@postgres:5432/ecommerce
-      REDIS_URL: redis://redis:6379/0
-      CELERY_BROKER_URL: amqp://rabbitmq:5672//
-      MAILJET_API_KEY: your_public_key
-      MAILJET_SECRET_KEY: your_secret_key
-      MAIL_FROM_EMAIL: no-reply@yourdomain.com
-      MAIL_FROM_NAME: Your Store
-    volumes:
-      - frontend_build:/app/static/frontend
-      - frontend_build:/app/templates
     depends_on:
       - postgres
       - redis
@@ -45,29 +27,20 @@ services:
       - "8000:8000"
 
   celery_worker:
-    build: ./backend
-    command: celery -A project worker -l info
-    environment:
-      DATABASE_URL: postgres://ecommerce:ecommerce@postgres:5432/ecommerce
-      REDIS_URL: redis://redis:6379/0
-      CELERY_BROKER_URL: amqp://rabbitmq:5672//
-      MAILJET_API_KEY: your_public_key
-      MAILJET_SECRET_KEY: your_secret_key
-      MAIL_FROM_EMAIL: no-reply@yourdomain.com
-      MAIL_FROM_NAME: Your Store
+    build: ./server
+    image: djrecommerce-celery-worker
+    command: celery -A workers worker -l info
     depends_on:
       - backend
       - redis
       - rabbitmq
 
   event_consumer:
-    build: ./backend
+    build: ./server
+    image: djrecommerce-event-consumer
     command: python manage.py run_notifications_consumer
-    environment:
-      CELERY_BROKER_URL: amqp://rabbitmq:5672//
     depends_on:
       - rabbitmq
 
 volumes:
   postgres_data:
-  frontend_build:

@@ -102,7 +102,7 @@ export const Home: React.FC = () => {
                       Add to cart
                     </button>
                     <button className="rounded bg-red-600 px-3 py-1 text-white text-sm">
-                      ♥
+                      &#9829;
                     </button>
                   </div>
                 </div>

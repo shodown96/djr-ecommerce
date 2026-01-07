@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { authSignup } from "../store/actions/auth";
+import { authSignUp } from "../store/actions/auth";
 import toast from "react-hot-toast";
 import type { SignUpPayload } from "../types";
 
@@ -149,7 +149,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  signup: (data: SignUpPayload) => dispatch(authSignup(data)),
+  signup: (data: SignUpPayload) => dispatch(authSignUp(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

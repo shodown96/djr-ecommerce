@@ -146,20 +146,20 @@ const ProductDetail: React.FC<Props> = ({
     }));
   };
 
-  const checkInCart = (id: number) => {
+  const checkInCart = (id: string) => {
     if (!cart || !cart.order_items?.length) return false;
     return cart.order_items.some(
       (i: any) => i.item.id === id
     );
   };
 
-  const getOrderItem = (id: number) =>
+  const getOrderItem = (id: string) =>
     cart.order_items.find(
       (i: any) => i.item.id === id
     )?.id;
 
-  const handleRemoveItem = (itemID: number) => {
-    const id = getOrderItem(itemID);
+  const handleRemoveItem = (itemId: string) => {
+    const id = getOrderItem(itemId);
     if (!id) return;
 
     axiosClient

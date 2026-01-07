@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { logout, authCheckState } from "../store/actions/auth";
+import { signOut, authCheckState } from "../store/actions/auth";
 import { fetchCart } from "../store/actions/cart";
 
 type Props = {
   authenticated: boolean;
   cart: any;
   loading: boolean;
-  logout: () => void;
+  signOut: () => void;
   fetchCart: () => void;
   refreshAuthState: () => void;
 };
@@ -17,15 +17,18 @@ const Layout: React.FC<Props> = ({
   authenticated,
   cart,
   loading,
-  logout,
+  signOut,
   fetchCart,
   refreshAuthState,
 }) => {
   const [opened, setOpened] = useState(false);
   const navigate = useNavigate();
+
+  // Calculate cart item count safely
   const cartCount = cart && !loading ? cart.order_items?.length ?? 0 : 0;
 
   useEffect(() => {
+    // Fetch cart and refresh auth state on layout mount
     fetchCart();
     refreshAuthState();
   }, []);
@@ -36,13 +39,11 @@ const Layout: React.FC<Props> = ({
       <nav className="bg-gray-900 text-white">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-16 items-center justify-between">
-            <Link
-              to="/"
-              className="text-lg font-bold"
-            >
-              DJR-ECOMMERCE
+            <Link to="/" className="text-lg font-bold">
+              DJR ECOMMERCE
             </Link>
 
+            {/* Mobile menu toggle */}
             <button
               className="md:hidden"
               onClick={() => setOpened(!opened)}
@@ -50,60 +51,29 @@ const Layout: React.FC<Props> = ({
               ☰
             </button>
 
+            {/* Desktop navigation */}
             <div className="hidden md:flex items-center gap-6">
               <Link to="/">Home</Link>
               <Link to="/products">Products</Link>
 
               {authenticated ? (
                 <>
-                  {/* Cart */}
+                  {/* Cart dropdown wrapper */}
                   <div className="relative group">
-                    <button className="flex items-center gap-1">
-                      🛒 ({cartCount})
+                    {/* Cart button */}
+                    <button className="flex items-center gap-1" onClick={() => navigate("/order-summary")}>
+                      Cart ({cartCount})
                     </button>
-
-                    <div className="absolute right-0 mt-2 w-64 rounded bg-white text-black shadow-lg opacity-0 group-hover:opacity-100 transition pointer-events-none group-hover:pointer-events-auto">
-                      {cart && cart.order_items?.length > 0 && !loading ? (
-                        <>
-                          {cart.order_items.map((item: any, i: number) => (
-                            <div
-                              key={i}
-                              className="px-4 py-2 hover:bg-gray-100"
-                            >
-                              <Link
-                                to={`/products/${item.item.id}`}
-                              >
-                                {item.quantity} x {item.item.title}
-                              </Link>
-                            </div>
-                          ))}
-
-                          <hr />
-
-                          <button
-                            onClick={() =>
-                              navigate("/order-summary")
-                            }
-                            className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                          >
-                            View All →
-                          </button>
-                        </>
-                      ) : (
-                        <div className="px-4 py-2">
-                          No items in your cart
-                        </div>
-                      )}
-                    </div>
                   </div>
 
+                  {/* Show checkout only if cart has items */}
                   {cartCount > 0 && (
                     <Link to="/checkout">Checkout</Link>
                   )}
 
                   <Link to="/profile">Profile</Link>
 
-                  <button onClick={logout}>Logout</button>
+                  <button onClick={signOut}>Sign out</button>
                 </>
               ) : (
                 <>
@@ -130,10 +100,10 @@ const Layout: React.FC<Props> = ({
                     Profile
                   </Link>
                   <button
-                    onClick={logout}
+                    onClick={signOut}
                     className="block text-left"
                   >
-                    Logout
+                    Sign out
                   </button>
                 </>
               ) : (
@@ -169,8 +139,7 @@ const Layout: React.FC<Props> = ({
             <div className="flex gap-4 mt-4">
               <a href="https://web.facebook.com/elijah.soladoye/" target="_blank" rel="noreferrer">Facebook</a>
               <a href="https://github.com/shodown96/" target="_blank" rel="noreferrer">GitHub</a>
-              <a href="https://www.linkedin.com/in/elijah-soladoye-2b99b11b5" target="_blank" rel="noreferrer">LinkedIn</a>
-              <a href="https://www.instagram.com/shodown96/" target="_blank" rel="noreferrer">Instagram</a>
+              <a href="https://www.linkedin.com/in/elijah-soladoye" target="_blank" rel="noreferrer">LinkedIn</a>
             </div>
           </div>
 
@@ -182,7 +151,7 @@ const Layout: React.FC<Props> = ({
               {authenticated ? (
                 <>
                   <li><Link to="/profile">Profile</Link></li>
-                  <li><button onClick={logout}>Logout</button></li>
+                  <li><button onClick={signOut}>Sign out</button></li>
                 </>
               ) : (
                 <>
@@ -225,7 +194,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  logout: () => dispatch(logout()),
+  signOut: () => dispatch(signOut()),
   fetchCart: () => dispatch(fetchCart()),
   refreshAuthState: () => dispatch(authCheckState()),
 });

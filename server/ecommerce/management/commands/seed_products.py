@@ -30,7 +30,20 @@ SIZES = ["S", "M", "L"]
 class Command(BaseCommand):
     help = "Seed products with placeholder images"
 
-    def handle(self, *args, **kwargs):
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--delete",
+            action="store_true",
+            help="Delete existing products before seeding",
+        )
+
+    def handle(self, *args, **options):
+        if options["delete"]:
+            self.stdout.write("🗑️ Deleting existing products...")
+            ItemVariation.objects.all().delete()
+            Variation.objects.all().delete()
+            Item.objects.all().delete()
+
         self.stdout.write("🌱 Seeding products...")
 
         for title in PRODUCT_SEEDS:
@@ -46,11 +59,13 @@ class Command(BaseCommand):
                 self.stdout.write(f"❌ Image fetch failed for {title}")
                 continue
 
+            price = random.randint(1000, 5000)
+
             item = Item(
                 title=title,
                 slug=slug,
-                price=random.randint(5000, 30000),
-                discount_price=random.choice([None, random.randint(3000, 15000)]),
+                price=price,
+                discount_price=random.choice([None, random.randint(500, price)]),
                 category=random.choice(["S", "SW", "OW"]),
                 label=random.choice(["P", "S", "D"]),
                 description=f"{title} made with premium materials.",

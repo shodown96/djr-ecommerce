@@ -93,9 +93,9 @@ const OrderSummary: React.FC<Props> = ({
       .catch((err) => setState({ ...state, error: err }));
   };
 
-  const handleRemoveItem = (itemID: string) => {
+  const handleRemoveItem = (itemId: string) => {
     axiosClient
-      .delete(API_ENDPOINTS.Orders.DeleteOrderItem(itemID))
+      .delete(API_ENDPOINTS.Orders.DeleteOrderItem(itemId))
       .then(() => refreshCart())
       .catch((err) => setState({ ...state, error: err }));
   };

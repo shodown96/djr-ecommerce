@@ -56,9 +56,8 @@ const PaystackForm: React.FC<Props> = ({
     if (!valid) return;
 
     const popup = new PaystackPop();
-    console.log(import.meta.env.PAYSTACK_PUBLIC_KEY!)
     await popup.checkout({
-      key: import.meta.env.PAYSTACK_PUBLIC_KEY!,
+      key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
       email: user.email,
       amount: Number(order.total) * 381.5 * 100,
 

@@ -18,6 +18,9 @@ def publish_event(event_name: str, payload: dict):
     """
     # Establish a connection to RabbitMQ using the configured URL
     with Connection(settings.RABBITMQ_URL) as conn:
+        # Ensure the events exchange exists before publishing
+        EVENTS_EXCHANGE(conn).declare()
+
         # Create a producer for publishing messages
         producer = Producer(conn)
 

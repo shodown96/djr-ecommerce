@@ -31,7 +31,7 @@ export const profileUpdated = (user: any = {}) => ({
   user,
 });
 
-export const logout = () => {
+export const signOut = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("expiration");
   delete axiosClient.defaults.headers.Authorization;
@@ -46,14 +46,14 @@ export const logout = () => {
 export const checkAuthTimeout = (expirationSeconds: number) => {
   return (dispatch: any) => {
     setTimeout(() => {
-      dispatch(logout());
+      dispatch(signOut());
     }, expirationSeconds * 1000);
   };
 };
 
 // --------- AUTH FLOWS ---------
 
-export const authLogin = (username: string, password: string) => {
+export const authSignIn = (username: string, password: string) => {
   return (dispatch: any) => {
     dispatch(authStart());
 
@@ -75,7 +75,7 @@ export const authLogin = (username: string, password: string) => {
   };
 };
 
-export const authSignup = (data: SignUpPayload) => {
+export const authSignUp = (data: SignUpPayload) => {
   return (dispatch: any) => {
     dispatch(authStart());
 
@@ -104,12 +104,12 @@ export const authCheckState = () => {
     const expiration = localStorage.getItem("expiration");
 
     if (!token || !expiration) {
-      dispatch(logout());
+      dispatch(signOut());
       return;
     }
 
     if (Number(expiration) <= Date.now()) {
-      dispatch(logout());
+      dispatch(signOut());
       return;
     }
 
@@ -152,7 +152,7 @@ export const authDeleteAccount = () => {
 
     axiosClient
       .delete(API_ENDPOINTS.Auth.Me)
-      .then(() => dispatch(logout()))
+      .then(() => dispatch(signOut()))
       .catch((err) => dispatch(authFail(err)));
   };
 };
