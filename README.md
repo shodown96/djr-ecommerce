@@ -23,6 +23,7 @@ The frontend is built with **React, Redux, and Tailwind**.
 - **RabbitMQ** publishes domain events (e.g. `order.completed`)
 - **Event Consumers** react to events and trigger async work
 - **Idempotency** prevents duplicate side effects during retries
+- **Stripe & Paystack** as payment gateways
 
 ---
 
@@ -68,26 +69,23 @@ npm start
 ### Local (development)
 
 ```bash
-# 1. Build frontend
-sh ./scripts/build_client.sh
+# Merge environemnt variables
+sh ./scripts/merge_envs.sh
 
-# 2. Merge environemnt variables
-sh ./scripts/build_client.sh
-
-# 3. Run local stack
+# Run local stack
 docker compose up --build
 ```
 
 ### Production
 
 ```bash
-# 1. Build frontend
+# Build frontend
 sh ./scripts/build_client.sh
 
-# 2. Merge environemnt variables
-sh ./scripts/build_client.sh
+# Merge environemnt variables
+sh ./scripts/merge_envs.sh
 
-# 2. Run production stack
+# Run production stack
 docker compose -f docker-compose.prod.yml up -d
 ```
 <!-- docker compose down -v -->
