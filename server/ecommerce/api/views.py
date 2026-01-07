@@ -2,17 +2,11 @@ import datetime
 import json
 
 import requests
-
-# from rest_auth.registration.views import RegisterView, TokenSerializer, JWTSerializer
-# from rest_auth.views import LoginView
 import stripe
-from vauth.models import Account
-from utilities.common import is_valid
+from common.exceptions import BadRequestError, NotFoundError
+from common.response import EmptyResponse, SuccessResponse, CreatedResponse
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-from django.http import Http404
-from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django_countries import countries
 from ecommerce.api.serializers import (
@@ -28,18 +22,16 @@ from ecommerce.models import Address, Coupon, Item, Order, OrderItem, Payment, V
 from ecommerce.views import create_ref_code
 from events.publisher import publish_event
 from rest_framework.generics import (
-    CreateAPIView,
     DestroyAPIView,
     ListAPIView,
-    RetrieveAPIView,
-    UpdateAPIView,
     ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView
+    RetrieveAPIView,
+    RetrieveUpdateDestroyAPIView,
 )
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
+from utilities.common import is_valid
+from vauth.models import Account
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 PAYSTACK_SECRET_KEY = settings.PAYSTACK_SECRET_KEY
@@ -51,19 +43,29 @@ class ItemListView(ListAPIView):
     serializer_class = ItemSerializer
     queryset = Item.objects.all()
 
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(instance=self.get_queryset(), many=True)
+        return SuccessResponse(serializer.data).send()
+
 
 class ItemDetailView(RetrieveAPIView):
     permission_classes = (AllowAny,)
     serializer_class = ItemDetailSerializer
     queryset = Item.objects.all()
 
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(instance=self.get_object())
+        return SuccessResponse(serializer.data).send()
+
 
 class OrderQuantityUpdateView(APIView):
     def post(self, request, *args, **kwargs):
         slug = request.data.get("slug", None)
         if slug is None:
-            return Response({"message": "Invalid data"}, status=HTTP_400_BAD_REQUEST)
-        item = get_object_or_404(Item, slug=slug)
+            raise BadRequestError("Invalid data.")
+        item = Item.objects.filter(slug=slug).first()
+        if not item:
+            raise NotFoundError()
         order_qs = Order.objects.filter(user=request.user, ordered=False)
         if order_qs.exists():
             order = order_qs[0]
@@ -77,32 +79,30 @@ class OrderQuantityUpdateView(APIView):
                     order_item.save()
                 else:
                     order.items.remove(order_item)
-                return Response(status=HTTP_200_OK)
+                return EmptyResponse().send()
             else:
-                return Response(
-                    {"message": "This item was not in your cart."},
-                    status=HTTP_400_BAD_REQUEST,
-                )
+                raise BadRequestError("This item was not in your cart.")
         else:
-            return Response(
-                {"message": "You do not have an active order."},
-                status=HTTP_400_BAD_REQUEST,
-            )
+            raise BadRequestError("You do not have an active order.")
 
 
 class OrderItemDeleteView(DestroyAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
     queryset = OrderItem.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        super().destroy(request, *args, **kwargs)
+        return EmptyResponse().send()
 
 
 class AddToCartView(APIView):
     def post(self, request, *args, **kwargs):
         slug = request.data.get("slug", None)
         if slug is None:
-            return Response(
-                {"message": "Invalid request."}, status=HTTP_400_BAD_REQUEST
-            )
-        item = get_object_or_404(Item, slug=slug)
+            raise BadRequestError("Invalid request.")
+        item = Item.objects.filter(slug=slug).first()
+        if not item:
+            raise NotFoundError()
 
         # # mine
         # order_item, created = OrderItem.objects.get_or_create(
@@ -131,10 +131,7 @@ class AddToCartView(APIView):
         variations = request.data.get("variations", [])
         minimum_variation_count = Variation.objects.filter(item=item).count()
         if len(variations) < minimum_variation_count:
-            return Response(
-                {"message": "Please specify the required variation types."},
-                status=HTTP_400_BAD_REQUEST,
-            )
+            raise BadRequestError("Please specify the required variation types.")
 
         order_item_qs = OrderItem.objects.filter(
             item=item, user=request.user, ordered=False
@@ -159,7 +156,7 @@ class AddToCartView(APIView):
             order = order_qs[0]
             if not order.items.filter(item__id=order_item.id).exists():
                 order.items.add(order_item)
-                return Response(status=HTTP_200_OK)
+                return EmptyResponse().send()
             else:
                 print("#############################")
 
@@ -167,24 +164,27 @@ class AddToCartView(APIView):
             ordered_date = timezone.now()
             order = Order.objects.create(user=request.user, ordered_date=ordered_date)
             order.items.add(order_item)
-            return Response(status=HTTP_200_OK)
+            return EmptyResponse().send()
 
 
-class OrderDetailView(RetrieveAPIView):
+class OrderSummaryView(RetrieveAPIView):
     serializer_class = OrderSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
-            return order
-        except ObjectDoesNotExist:
-            raise Http404("You do not have an active order")
-            # return Response({"message": "You do not have an active order"}, status=HTTP_400_BAD_REQUEST)
+        order = Order.objects.filter(user=self.request.user, ordered=False).first()
+        return order
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance:
+            return EmptyResponse().send()
+        serializer = self.serializer_class(instance=self.get_object())
+        return SuccessResponse(serializer.data).send()
 
 
 class PaymentView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         order_qs = Order.objects.filter(user=self.request.user, ordered=False)
@@ -203,17 +203,13 @@ class PaymentView(APIView):
             or int(billing_address_id) not in addresses
             or int(shipping_address_id) not in addresses
         ):
-            return Response(
-                {"message": "Please fill in your appropiate addresses."},
-                status=HTTP_400_BAD_REQUEST,
-            )
+            raise BadRequestError("Please fill in your appropiate addresses.")
 
         billing_address = Address.objects.get(id=billing_address_id)
         shipping_address = Address.objects.get(id=shipping_address_id)
         if not order_qs.exists():
-            return Response(
-                {"message": "Order not found, you've probably checked out already."},
-                status=HTTP_400_BAD_REQUEST,
+            raise BadRequestError(
+                "Order not found, you've probably checked out already."
             )
 
         order = order_qs[0]
@@ -251,8 +247,9 @@ class PaymentView(APIView):
 
             # create the payment
             payment = Payment()
-            payment.stripe_charge_id = charge["id"]
+            payment.api_id = charge["id"]
             payment.user = self.request.user
+            payment.provider = "stripe"
             payment.amount = order.get_total()
             payment.save()
 
@@ -270,116 +267,127 @@ class PaymentView(APIView):
             order.ref_code = create_ref_code()
             order.save()
 
-            return Response(
-                status=HTTP_200_OK, data={"message": "Payment Successful and captured."}
-            )
+            raise EmptyResponse("Payment Successful and captured.")
 
         except stripe.error.CardError as e:
             body = e.json_body
             err = body.get("error", {})
             print(e)
-            return Response(
-                {"message": f"{err.get('message')}"}, status=HTTP_400_BAD_REQUEST
-            )
+            raise BadRequestError(f"{err.get('message')}")
 
         except stripe.error.RateLimitError as e:
             # Too many requests made to the API too quickly
             print(e)
-            return Response(
-                {"message": "Rate limit error."}, status=HTTP_400_BAD_REQUEST
-            )
+            raise BadRequestError("Rate limit error.")
 
         except stripe.error.InvalidRequestError as e:
             print(e)
             # Invalid parameters were supplied to Stripe's API
-            return Response(
-                {"message": "Invalid parameters."}, status=HTTP_400_BAD_REQUEST
-            )
+            raise BadRequestError("Invalid parameters.")
 
         except stripe.error.AuthenticationError as e:
             # Authentication with Stripe's API failed
             # (maybe you changed API keys recently)
             print(e)
-            return Response(
-                {"message": "Not authenticated."}, status=HTTP_400_BAD_REQUEST
-            )
+            raise BadRequestError("Not authenticated.")
 
         except stripe.error.APIConnectionError as e:
             # Network communication with Stripe failed
             print(e)
-            return Response({"message": "Network error."}, status=HTTP_400_BAD_REQUEST)
+            raise BadRequestError("Network error.")
 
         except stripe.error.StripeError as e:
             # Display a very generic error to the user, and maybe send
             # yourself an email
             print(e)
-            return Response(
-                {
-                    "message": "Something went wrong. You were not charged. Please try again."
-                },
-                status=HTTP_400_BAD_REQUEST,
+            raise BadRequestError(
+                "Something went wrong. You were not charged. Please try again."
             )
 
         except Exception as e:
             # send an email to ourselves
             print(e)
-            return Response(
-                {"message": "A serious error occurred. We have been notifed."},
-                status=HTTP_400_BAD_REQUEST,
-            )
+            raise BadRequestError("A serious error occurred. We have been notifed.")
 
 
 class AddCouponView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         code = request.data.get("code", None)
         if not is_valid(code):
-            return Response(
-                {"message": "Invalid data received."}, status=HTTP_400_BAD_REQUEST
-            )
+            raise BadRequestError("Invalid data received.")
         order_qs = Order.objects.filter(user=self.request.user, ordered=False)
         if order_qs.exists():
             order = order_qs[0]
         else:
-            return Response(
-                {"message": "Order not found, Probably checkout already."},
-                status=HTTP_400_BAD_REQUEST,
-            )
-        coupon = get_object_or_404(Coupon, code=code)
+            raise BadRequestError("Order not found, Probably checkout already.")
+        coupon = Coupon.objects.filter(code=code).first()
+        if not coupon:
+            raise NotFoundError()
         order.coupon = coupon
         order.save()
-        return Response(status=HTTP_200_OK)
+        return EmptyResponse().send()
 
 
 class CountryListView(APIView):
     def get(self, request, *args, **kwargs):
-        return Response(countries, status=HTTP_200_OK)
-
+        return SuccessResponse(countries).send()
 
 
 class AddressListCreateAPIView(ListCreateAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
     serializer_class = AddressSerializer
     queryset = Address.objects.all()
+
+    def get_queryset(self, address_type=None):
+        if address_type:
+            return Address.objects.filter(address_type=address_type)
+        return super().get_queryset()
+
+    def list(self, request, *args, **kwargs):
+        address_type = request.GET.get("address_type")
+        queryset = self.get_queryset(address_type)
+        serializer = self.get_serializer(queryset, many=True)
+        return SuccessResponse(serializer.data).send()
+
+    def create(self, request, *args, **kwargs):
+        data = super().create(request, *args, **kwargs).data
+        return CreatedResponse(data).send()
 
 
 class AddressRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
     serializer_class = AddressSerializer
     queryset = Address.objects.all()
 
+    def get(self, request, *args, **kwargs):
+        data = super().get(request, *args, **kwargs).data
+        return SuccessResponse(data).send()
+
+    def update(self, request, *args, **kwargs):
+        data = super().update(request, *args, **kwargs).data
+        return SuccessResponse(data).send()
+
+    def destroy(self, request, *args, **kwargs):
+        data = super().destroy(request, *args, **kwargs).data
+        return EmptyResponse(data).send()
+
 
 class PaymentListView(ListAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
     serializer_class = PaymentSerializer
 
     def get_queryset(self):
         return Payment.objects.filter(user=self.request.user)
 
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(instance=self.get_queryset(), many=True)
+        return SuccessResponse(serializer.data).send()
+
 
 class PaystackChargeView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         order_qs = Order.objects.filter(user=self.request.user, ordered=False)
@@ -396,18 +404,14 @@ class PaystackChargeView(APIView):
             or int(billing_address_id) not in addresses
             or int(shipping_address_id) not in addresses
         ):
-            return Response(
-                {"message": "Please fill in your appropiate addresses."},
-                status=HTTP_400_BAD_REQUEST,
-            )
+            raise BadRequestError("Please fill in your appropiate addresses.").send()
 
         billing_address = Address.objects.get(id=billing_address_id)
         shipping_address = Address.objects.get(id=shipping_address_id)
         if not order_qs.exists():
-            return Response(
-                {"message": "Order not found, you've probably checked out already."},
-                status=HTTP_400_BAD_REQUEST,
-            )
+            raise BadRequestError(
+                "Order not found, you've probably checked out already."
+            ).send()
 
         order = order_qs[0]
         amount = int(order.get_total() * EXCHANGE_RATE) * 100
@@ -439,12 +443,13 @@ class PaystackChargeView(APIView):
         print(json.dumps(res, sort_keys=True, indent=4))
         if res["status"]:
             payment = Payment(
-                stripe_charge_id=str(res["data"]["id"])
+                api_id=str(res["data"]["id"])
                 + "-"
                 + str(res["data"]["reference"])
                 + "-paystack-id-ref",
                 user=Account.objects.get(is_superuser=True),
                 amount=(order.get_total() * EXCHANGE_RATE),
+                provider="paystack",
                 timestamp=datetime.datetime.fromisoformat(
                     res["data"]["paid_at"][:-1] + "+00:00"
                 ),
@@ -465,16 +470,12 @@ class PaystackChargeView(APIView):
             del res["data"]["id"]
             del res["data"]["authorization"]
             del res["data"]["customer"]
-            return Response(
-                {"message": "Payment Successful.", "response": res}, status=HTTP_200_OK
-            )
-        return Response(
-            {"message": "Payment Error.", "response": res}, status=HTTP_400_BAD_REQUEST
-        )
+            return SuccessResponse(res, "Payment Successful").send()
+        raise BadRequestError("Payment Error", res).send()
 
 
 class PaystackRecieveView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         order_qs = Order.objects.filter(user=self.request.user, ordered=False)
@@ -491,18 +492,14 @@ class PaystackRecieveView(APIView):
             or int(billing_address_id) not in addresses
             or int(shipping_address_id) not in addresses
         ):
-            return Response(
-                {"message": "Please fill in your appropiate addresses."},
-                status=HTTP_400_BAD_REQUEST,
-            )
+            raise BadRequestError("Please fill in your appropiate addresses.").send()
 
         billing_address = Address.objects.get(id=billing_address_id)
         shipping_address = Address.objects.get(id=shipping_address_id)
         if not order_qs.exists():
-            return Response(
-                {"message": "Order not found, you've probably checked out already."},
-                status=HTTP_400_BAD_REQUEST,
-            )
+            raise BadRequestError(
+                "Order not found, you've probably checked out already."
+            ).send()
 
         order = order_qs[0]
         amount = int(order.get_total() * EXCHANGE_RATE) * 100
@@ -513,7 +510,8 @@ class PaystackRecieveView(APIView):
             payment = Payment(
                 user=request.user,
                 amount=order.get_total() * EXCHANGE_RATE,
-                stripe_charge_id=str(info["reference"]) + "-paystack",
+                api_id=str(info["reference"]),
+                provider="paystack",
                 timestamp=datetime.datetime.now(),
             ).save()
             order_items = order.items.all()
@@ -535,8 +533,8 @@ class PaystackRecieveView(APIView):
                     "total": order.get_total(),
                 },
             )
-            return Response({"message": "Payment Successful."}, status=HTTP_200_OK)
-        return Response({"message": "Payment Error."}, status=HTTP_400_BAD_REQUEST)
+            return SuccessResponse(None, "Payment Successful").send()
+        raise BadRequestError(None, "Payment Error").send()
 
 
 # message: "Approved"

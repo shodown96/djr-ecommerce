@@ -10,7 +10,7 @@ type Props = {
   login: (username: string, password: string) => void;
 };
 
-const Login: React.FC<Props> = ({
+const SignIn: React.FC<Props> = ({
   loading,
   error,
   token,
@@ -25,12 +25,6 @@ const Login: React.FC<Props> = ({
 
   const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    if (token) {
-      navigate("/");
-    }
-  }, [token, navigate]);
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -42,10 +36,15 @@ const Login: React.FC<Props> = ({
     setSuccess(true);
   };
 
+ useEffect(() => {
+    if (token) {
+      navigate("/products");
+    }
+  }, [token]);
   return (
     <div className="max-w-2xl mx-auto px-4">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <h3 className="text-center text-xl font-semibold">Login</h3>
+        <h3 className="text-center text-xl font-semibold">Signin</h3>
 
         {error && success && (
           <div className="rounded bg-red-100 p-4 text-red-800">
@@ -85,13 +84,13 @@ const Login: React.FC<Props> = ({
             disabled={loading}
             className="rounded bg-gray-900 px-6 py-2 text-white disabled:opacity-50"
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Signing in..." : "Signin"}
           </button>
 
           <p className="text-sm">
             New to us?{" "}
             <NavLink
-              to="/signup"
+              to="/sign-up"
               className="text-blue-600 underline"
             >
               Sign Up
@@ -114,4 +113,4 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(authLogin(username, password)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

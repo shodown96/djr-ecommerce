@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logout, authCheckState } from "../store/actions/auth";
 import { fetchCart } from "../store/actions/cart";
 
@@ -10,8 +10,7 @@ type Props = {
   loading: boolean;
   logout: () => void;
   fetchCart: () => void;
-  onTryAutoSignup: () => void;
-  children: React.ReactNode;
+  refreshAuthState: () => void;
 };
 
 const Layout: React.FC<Props> = ({
@@ -20,20 +19,16 @@ const Layout: React.FC<Props> = ({
   loading,
   logout,
   fetchCart,
-  onTryAutoSignup,
-  children,
+  refreshAuthState,
 }) => {
   const [opened, setOpened] = useState(false);
   const navigate = useNavigate();
+  const cartCount = cart && !loading ? cart.order_items?.length ?? 0 : 0;
 
   useEffect(() => {
     fetchCart();
-    onTryAutoSignup();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    refreshAuthState();
   }, []);
-
-  const cartCount =
-    cart && !loading ? cart.order_items?.length ?? 0 : 0;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -112,8 +107,8 @@ const Layout: React.FC<Props> = ({
                 </>
               ) : (
                 <>
-                  <Link to="/login">Login</Link>
-                  <Link to="/signup">Signup</Link>
+                  <Link to="/sign-in">Signin</Link>
+                  <Link to="/sign-up">Signup</Link>
                 </>
               )}
             </div>
@@ -143,10 +138,10 @@ const Layout: React.FC<Props> = ({
                 </>
               ) : (
                 <>
-                  <Link to="/login" className="block">
-                    Login
+                  <Link to="/sign-in" className="block">
+                    Signin
                   </Link>
-                  <Link to="/signup" className="block">
+                  <Link to="/sign-up" className="block">
                     Signup
                   </Link>
                 </>
@@ -157,7 +152,9 @@ const Layout: React.FC<Props> = ({
       </nav>
 
       {/* Page content */}
-      <main className="flex-1 mt-6">{children}</main>
+      <main className="flex-1 mt-6">
+        <Outlet />
+      </main>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white mt-10">
@@ -189,8 +186,8 @@ const Layout: React.FC<Props> = ({
                 </>
               ) : (
                 <>
-                  <li><Link to="/login">Login</Link></li>
-                  <li><Link to="/signup">Signup</Link></li>
+                  <li><Link to="/sign-in">Signin</Link></li>
+                  <li><Link to="/sign-up">Signup</Link></li>
                 </>
               )}
             </ul>
@@ -230,7 +227,7 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: any) => ({
   logout: () => dispatch(logout()),
   fetchCart: () => dispatch(fetchCart()),
-  onTryAutoSignup: () => dispatch(authCheckState()),
+  refreshAuthState: () => dispatch(authCheckState()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Layout);

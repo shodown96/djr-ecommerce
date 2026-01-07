@@ -19,7 +19,7 @@ type State = {
     loading: boolean;
     error: any;
     success: boolean;
-    stripe: boolean;
+    provider: "stripe" | "paystack";
     selectedBillingAddress: string | number;
     selectedShippingAddress: string | number;
 };
@@ -39,7 +39,7 @@ const Checkout: React.FC<Props> = ({
         loading: false,
         error: null,
         success: false,
-        stripe: true,
+        provider: "paystack",
         selectedBillingAddress: "",
         selectedShippingAddress: "",
     });
@@ -72,8 +72,9 @@ const Checkout: React.FC<Props> = ({
         axiosClient
             .get(API_ENDPOINTS.Addresses.ListByAddressType("B"))
             .then((res) => {
+                const data = res.data.data
                 setBillingAddresses(
-                    res.data.map((a: any) => ({
+                    data.map((a: any) => ({
                         key: a.id,
                         text: `${a.street_address}, ${a.apartment_address}, ${a.country}`,
                         value: a.id,
@@ -82,7 +83,7 @@ const Checkout: React.FC<Props> = ({
 
                 setState((prev) => ({
                     ...prev,
-                    selectedBillingAddress: handleGetDefaultAddress(res.data),
+                    selectedBillingAddress: handleGetDefaultAddress(data),
                     loading: false,
                 }));
             })
@@ -97,8 +98,9 @@ const Checkout: React.FC<Props> = ({
         axiosClient
             .get(API_ENDPOINTS.Addresses.ListByAddressType("S"))
             .then((res) => {
+                const data = res.data.data
                 setShippingAddresses(
-                    res.data.map((a: any) => ({
+                    data.map((a: any) => ({
                         key: a.id,
                         text: `${a.street_address}, ${a.apartment_address}, ${a.country}`,
                         value: a.id,
@@ -107,7 +109,7 @@ const Checkout: React.FC<Props> = ({
 
                 setState((prev) => ({
                     ...prev,
-                    selectedShippingAddress: handleGetDefaultAddress(res.data),
+                    selectedShippingAddress: handleGetDefaultAddress(data),
                     loading: false,
                 }));
             })
@@ -116,8 +118,8 @@ const Checkout: React.FC<Props> = ({
             });
     };
 
-    const toggleStripe = () => {
-        setState((prev) => ({ ...prev, stripe: !prev.stripe }));
+    const setProvider = (provider: State['provider']) => {
+        setState((prev) => ({ ...prev, provider }));
     };
 
     const renderAlert = () => {
@@ -157,7 +159,7 @@ const Checkout: React.FC<Props> = ({
         return null;
     };
 
-    if (!authenticated) throw redirect("/login");
+    if (!authenticated) throw redirect("/sign-in");
     if (!cart || cart.order_items?.length < 1) throw redirect("/");
 
     return (
@@ -167,14 +169,14 @@ const Checkout: React.FC<Props> = ({
             <OrderPreview />
             <CouponForm />
 
-            <h3 className="text-xl font-semibold">
-                {state.stripe ? "Stripe" : "Paystack"} Payment
+            <h3 className="text-xl font-semibold capitalize">
+                {state.provider} Payment
             </h3>
 
             {renderAlert()}
 
             <form className="addresses space-y-3">
-                {shippingAddresses.length > 0 ? (
+                {shippingAddresses.length ? (
                     <>
                         <select
                             name="selectedShippingAddress"
@@ -189,9 +191,11 @@ const Checkout: React.FC<Props> = ({
                                 </option>
                             ))}
                         </select>
-                        <p className="text-sm text-red-500">
-                            Please select your shipping address.
-                        </p>
+                        {!state.selectedShippingAddress ? (
+                            <p className="text-sm text-red-500">
+                                Please select your shipping address.
+                            </p>
+                        ) : null}
                     </>
                 ) : (
                     <p>
@@ -199,7 +203,7 @@ const Checkout: React.FC<Props> = ({
                     </p>
                 )}
 
-                {billingAddresses.length > 0 ? (
+                {billingAddresses.length ? (
                     <>
                         <select
                             name="selectedBillingAddress"
@@ -214,9 +218,12 @@ const Checkout: React.FC<Props> = ({
                                 </option>
                             ))}
                         </select>
-                        <p className="text-sm text-red-500">
-                            Please select your billing address.
-                        </p>
+
+                        {!state.selectedBillingAddress ? (
+                            <p className="text-sm text-red-500">
+                                Please select your billing address.
+                            </p>
+                        ) : null}
                     </>
                 ) : (
                     <p>
@@ -230,40 +237,41 @@ const Checkout: React.FC<Props> = ({
             ) : (
                 <>
                     <div className="space-y-2">
-                        <label className="flex items-center gap-2">
+                        {/* <label className="flex items-center gap-2">
                             <input
                                 type="radio"
                                 checked={state.stripe}
                                 onChange={toggleStripe}
                             />
                             <span>Stripe</span>
-                        </label>
+                        </label> */}
 
                         <label className="flex items-center gap-2">
                             <input
                                 type="radio"
-                                checked={!state.stripe}
-                                onChange={toggleStripe}
+                                checked={state.provider === 'paystack'}
+                                onChange={() => setProvider("paystack")}
                             />
                             <span>Paystack</span>
                         </label>
                     </div>
 
-                    {state.stripe ? (
+                    {state.provider === 'stripe' ? (
                         <StripeForm
                             selectedBillingAddress={state.selectedBillingAddress}
                             selectedShippingAddress={state.selectedShippingAddress}
                             state={state}
                             setState={setState}
                         />
-                    ) : (
+                    ) : null}
+                    {state.provider === 'paystack' ? (
                         <PaystackForm
                             selectedBillingAddress={state.selectedBillingAddress}
                             selectedShippingAddress={state.selectedShippingAddress}
                             state={state}
                             setState={setState}
                         />
-                    )}
+                    ) : null}
                 </>
             )}
         </div>

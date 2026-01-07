@@ -1,7 +1,6 @@
 '''Use this for production'''
 
-from .base import *
-import django_heroku
+from core.settings.base import *
 
 DEBUG = False
 ALLOWED_HOSTS += ['djr-ecommerce.herokuapp.com']
@@ -46,4 +45,14 @@ AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-django_heroku.settings(locals())
+
+# LOGGING = {
+#     "version": 1,
+#     "handlers": {
+#         "console": {"class": "logging.StreamHandler"},
+#     },
+#     "root": {
+#         "handlers": ["console"],
+#         "level": "INFO",
+#     },
+# }

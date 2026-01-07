@@ -1,4 +1,3 @@
-
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum
@@ -15,6 +14,12 @@ LABEL_CHOICES = (("P", "primary"), ("S", "secondary"), ("D", "danger"))
 ADDRESS_CHOICES = (
     ("B", "Billing"),
     ("S", "Shipping"),
+)
+
+PAYMENT_PROVIDER_CHOICES = (
+    ("paystack", "paystack"),
+    ("stripe", "stripe"),
+    ("paypal", "paypal"),
 )
 
 
@@ -186,7 +191,12 @@ class Address(BaseModel):
 
 
 class Payment(BaseModel):
-    stripe_charge_id = models.CharField(max_length=50)
+    """
+    api_id can serve as stripe charge id or paystack reference
+    """
+
+    api_id = models.CharField(max_length=50)
+    provider = models.CharField(max_length=10, choices=PAYMENT_PROVIDER_CHOICES, default="stripe")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True
     )

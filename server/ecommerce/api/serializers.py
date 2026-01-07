@@ -191,7 +191,7 @@ class PaymentSerializer(serializers.ModelSerializer):
         fields = ("id", "amount", "timestamp", "reference")
 
     def get_reference(self, obj):
-        return obj.stripe_charge_id
+        return obj.api_id
 
     def get_amount(self, obj):
         return intcomma(obj.amount)

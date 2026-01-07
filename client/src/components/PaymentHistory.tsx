@@ -34,7 +34,7 @@ const PaymentHistory: React.FC = () => {
       .get(API_ENDPOINTS.Payments.List)
       .then((res) => {
         setState({
-          payments: res.data,
+          payments: res.data.data,
           loading: false,
           error: null,
         });

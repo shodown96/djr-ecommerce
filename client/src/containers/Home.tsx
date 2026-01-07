@@ -5,10 +5,9 @@ export const Home: React.FC = () => {
     <>
       {/* Hero */}
       <div
-        className="relative -mt-5 h-100 bg-cover bg-center"
+        className="relative -mt-6 h-100 bg-cover bg-center"
         style={{
-          backgroundImage:
-            "url(https://mdbootstrap.com/img/Photos/Others/img%20(51).jpg)",
+          backgroundImage: "url(/bg.jpg)"
         }}
       >
         <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
@@ -61,33 +60,25 @@ export const Home: React.FC = () => {
               {
                 title: "Black denim jacket",
                 price: "$99.99",
-                imgA: "15a.jpg",
-                imgB: "15.jpg",
+                img: "15a.jpg",
               },
               {
                 title: "Red hoodie",
                 price: "$35.99",
-                imgA: "13a.jpg",
-                imgB: "13.jpg",
+                img: "13a.jpg",
               },
               {
                 title: "Grey sweater",
                 price: "$21.99",
                 old: "$36.99",
-                imgA: "14a.jpg",
-                imgB: "14.jpg",
+                img: "14a.jpg",
               },
             ].map((p, i) => (
-              <div key={i} className="border rounded overflow-hidden">
-                <div className="relative group">
+              <div key={i} className="border rounded">
+                <div className="relative group overflow-hidden">
                   <img
-                    src={`https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/${p.imgA}`}
-                    className="w-full"
-                    alt={p.title}
-                  />
-                  <img
-                    src={`https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/${p.imgB}`}
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition"
+                    src={`https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/${p.img}`}
+                    className="w-full bg-blend-multiply hover:scale-120 transition-all"
                     alt={p.title}
                   />
                 </div>

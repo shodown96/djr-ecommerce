@@ -149,16 +149,6 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_BACKEND = REDIS_URL
 
-LOGGING = {
-    "version": 1,
-    "handlers": {
-        "console": {"class": "logging.StreamHandler"},
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "INFO",
-    },
-}
 
 DEFAULT_TTL = 60 * 60 * 24  # 24 hours
 
@@ -183,3 +173,7 @@ JWT_AUTH = {
 }
 
 SWAGGER_USE_COMPAT_RENDERERS = False
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=180),
+}

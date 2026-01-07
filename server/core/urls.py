@@ -28,7 +28,7 @@ urlpatterns = [
         name="schema_redoc_ui",
     ),
     path("api/v1/", include("core.api_v1_urls")),
-    re_path(r"^.*", TemplateView.as_view(template_name="index.html")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += [re_path(r"^.*", TemplateView.as_view(template_name="index.html"))]

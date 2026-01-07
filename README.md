@@ -2,7 +2,7 @@
 
 This repository contains an ecommerce application built with **Django** and **React**, extended with a **distributed, event-driven backend architecture**. 
 
-**⚠️ This repository is an old project, re-purposed to showcase simple distributed systems. FE+BE integration not fully tested yet**
+**⚠️ This repository is an old project, re-purposed to showcase simple distributed systems.**
 
 The backend uses **Django REST Framework** and is enhanced with:
 - **Celery** for background task processing
@@ -33,6 +33,9 @@ source .venv/bin/activate
 cd server
 pip install -r requirements.txt
 python manage.py runserver
+
+# Seed products
+python manage.py seed_products
 ```
 
 ## Run background process
@@ -40,6 +43,11 @@ python manage.py runserver
 cd server
 celery -A project worker -l info
 python manage.py run_notifications_consumer
+```
+
+## Run Backend Test
+```bash
+pytest
 ```
 
 ## Frontend development workflow

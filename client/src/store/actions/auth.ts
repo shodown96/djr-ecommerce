@@ -1,10 +1,8 @@
-import axios from "axios";
 import { axiosClient } from "../../axios";
 import {
-  loginURL,
-  signupURL,
-  userDetailURL
+  API_ENDPOINTS
 } from "../../constants/api";
+import type { SignUpPayload } from "../../types";
 import * as actionTypes from "./actionTypes";
 import { fetchCart } from "./cart";
 
@@ -15,7 +13,7 @@ export const authStart = () => ({
 });
 
 export const authSuccess = (token: string, user: any = {}) => {
-  axiosClient.defaults.headers.Authorization = `Token ${token}`;
+  axiosClient.defaults.headers.Authorization = `Bearer ${token}`;
   return {
     type: actionTypes.AUTH_SUCCESS,
     token,
@@ -59,10 +57,10 @@ export const authLogin = (username: string, password: string) => {
   return (dispatch: any) => {
     dispatch(authStart());
 
-    axios
-      .post(loginURL, { username, password })
+    axiosClient
+      .post(API_ENDPOINTS.Auth.SignIn, { username, password })
       .then((res) => {
-        const token = res.data.key;
+        const token = res.data.data.access;
         const expiration = Date.now() + 3600 * 1000;
 
         localStorage.setItem("token", token);
@@ -77,24 +75,14 @@ export const authLogin = (username: string, password: string) => {
   };
 };
 
-export const authSignup = (
-  username: string,
-  email: string,
-  password1: string,
-  password2: string
-) => {
+export const authSignup = (data: SignUpPayload) => {
   return (dispatch: any) => {
     dispatch(authStart());
 
-    axios
-      .post(signupURL, {
-        username,
-        email,
-        password1,
-        password2,
-      })
+    axiosClient
+      .post(API_ENDPOINTS.Auth.SignUp, data)
       .then((res) => {
-        const token = res.data.key;
+        const token = res.data.data.tokens.access;
         const expiration = Date.now() + 3600 * 1000;
 
         localStorage.setItem("token", token);
@@ -141,8 +129,8 @@ export const authCheckState = () => {
 export const authGetDetails = () => {
   return (dispatch: any) => {
     axiosClient
-      .get(userDetailURL)
-      .then((res) => dispatch(profileUpdated(res.data)))
+      .get(API_ENDPOINTS.Auth.Me)
+      .then((res) => dispatch(profileUpdated(res.data.data)))
       .catch((err) => dispatch(authFail(err)));
   };
 };
@@ -152,8 +140,8 @@ export const authUpdateDetails = (data: any) => {
     dispatch(authStart());
 
     axiosClient
-      .put(userDetailURL, data)
-      .then((res) => dispatch(profileUpdated(res.data)))
+      .put(API_ENDPOINTS.Auth.Me, data)
+      .then((res) => dispatch(profileUpdated(res.data.data)))
       .catch((err) => dispatch(authFail(err)));
   };
 };
@@ -163,7 +151,7 @@ export const authDeleteAccount = () => {
     dispatch(authStart());
 
     axiosClient
-      .delete(userDetailURL)
+      .delete(API_ENDPOINTS.Auth.Me)
       .then(() => dispatch(logout()))
       .catch((err) => dispatch(authFail(err)));
   };

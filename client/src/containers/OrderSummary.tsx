@@ -55,7 +55,7 @@ const OrderSummary: React.FC<Props> = ({
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate("/sign-in");
     }
   }, [isAuthenticated, navigate]);
 

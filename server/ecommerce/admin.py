@@ -89,7 +89,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ["user", "amount", "stripe_charge_id"]
+    list_display = ["user", "amount", "api_id"]
 
 
 admin.site.register(ItemVariation, ItemVariationAdmin)

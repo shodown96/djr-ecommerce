@@ -47,8 +47,8 @@ def test_user_signin(api_client, user):
     response = api_client.post("/api/v1/auth/sign-in/", payload, format="json")
 
     assert response.status_code == 200
-    assert "access" in response.data
-    assert "refresh" in response.data
+    assert "access" in response.data['data']
+    assert "refresh" in response.data['data']
 
 
 @pytest.mark.django_db
@@ -63,7 +63,7 @@ def test_users_me(api_client, user):
         format="json",
     )
 
-    access_token = login_response.data["access"]
+    access_token = login_response.data['data']["access"]
 
     # Attach JWT
     api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
@@ -71,7 +71,7 @@ def test_users_me(api_client, user):
     response = api_client.get("/api/v1/auth/users/me/")
 
     assert response.status_code == 200
-    assert response.data["email"] == test_user["email"]
+    assert response.data['data']["email"] == test_user["email"]
 
 
 @pytest.mark.django_db
@@ -94,7 +94,7 @@ def test_refresh_token(api_client, user):
 
     assert login_response.status_code == 200
 
-    refresh_token = login_response.data["refresh"]
+    refresh_token = login_response.data['data']["refresh"]
 
     # Use refresh token to get new access token
     refresh_response = api_client.post(
@@ -106,4 +106,4 @@ def test_refresh_token(api_client, user):
     )
 
     assert refresh_response.status_code == 200
-    assert "access" in refresh_response.data
+    assert "access" in refresh_response.data['data']

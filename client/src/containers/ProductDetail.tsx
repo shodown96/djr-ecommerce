@@ -1,10 +1,10 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosClient } from "../axios";
 import {
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  BASE_API_URL
 } from "../constants/api";
 import { fetchCart } from "../store/actions/cart";
 import ErrorPage from "./ErrorPage";
@@ -42,12 +42,12 @@ const ProductDetail: React.FC<Props> = ({
   const handleFetchItem = () => {
     setState((s) => ({ ...s, loading: true }));
 
-    axios
+    axiosClient
       .get(API_ENDPOINTS.Products.Detail(productID!))
       .then((res) => {
         setState((s) => ({
           ...s,
-          data: res.data,
+          data: res.data.data,
           loading: false,
         }));
         setNotFound(false);
@@ -74,7 +74,7 @@ const ProductDetail: React.FC<Props> = ({
     slug: string
   ) => {
     e.preventDefault();
-    if (!token) return navigate("/login");
+    if (!token) return navigate("/sign-in");
 
     setState((s) => ({
       ...s,
@@ -105,7 +105,7 @@ const ProductDetail: React.FC<Props> = ({
   };
 
   const handleNormalAddToCart = (slug: string) => {
-    if (!token) return navigate("/login");
+    if (!token) return navigate("/sign-in");
 
     setState((s) => ({
       ...s,
@@ -204,7 +204,7 @@ const ProductDetail: React.FC<Props> = ({
       {item && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <img
-            src={item.image}
+            src={`${BASE_API_URL}${item.image}`}
             alt={item.title}
             className="rounded shadow"
           />

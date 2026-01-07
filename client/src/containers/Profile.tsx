@@ -29,7 +29,7 @@ const Profile = ({ isAuthenticated, user }: any) => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate("/sign-in");
       return;
     }
 
@@ -80,7 +80,7 @@ const Profile = ({ isAuthenticated, user }: any) => {
     axiosClient
       .get(API_ENDPOINTS.Countries.List)
       .then((res) => {
-        setCountries(handleFormatCountries(res.data));
+        setCountries(handleFormatCountries(res.data.data));
       })
       .catch((err) =>
         setState((s) => ({ ...s, error: err }))
@@ -98,7 +98,7 @@ const Profile = ({ isAuthenticated, user }: any) => {
       .then((res) => {
         setState((s) => ({
           ...s,
-          addresses: res.data,
+          addresses: res.data.data,
           loading: false,
           selectedAddress: null,
         }));
@@ -131,7 +131,7 @@ const Profile = ({ isAuthenticated, user }: any) => {
 
   const renderAddresses = () => (
     <>
-      {state.addresses.map((a, i) => (
+      {state?.addresses?.map((a, i) => (
         <div
           key={i}
           className="mb-4 rounded border bg-white p-4 shadow"

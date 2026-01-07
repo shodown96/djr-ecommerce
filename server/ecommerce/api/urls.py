@@ -7,7 +7,7 @@ from ecommerce.api.views import (
     CountryListView,
     ItemDetailView,
     ItemListView,
-    OrderDetailView,
+    OrderSummaryView,
     OrderItemDeleteView,
     OrderQuantityUpdateView,
     PaymentListView,
@@ -26,7 +26,7 @@ urlpatterns = [
     path("products/<pk>/", ItemDetailView.as_view(), name="product-detail"),
     
     path("orders/add-to-cart/", AddToCartView.as_view(), name="add-to-cart"),
-    path("orders/order-summary/", OrderDetailView.as_view(), name="order-summary"),
+    path("orders/order-summary/", OrderSummaryView.as_view(), name="order-summary"),
     path("orders/checkout/", PaymentView.as_view(), name="checkout"),
     path("orders/add-coupon/", AddCouponView.as_view(), name="add-coupon"),
     path(

@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { axiosClient } from "../axios";
 import { API_ENDPOINTS } from "../constants/api";
 
-const paystackInstance = new PaystackPop();
 
 type Props = {
   user: {
@@ -29,7 +28,7 @@ const PaystackForm: React.FC<Props> = ({
 }) => {
   const navigate = useNavigate();
 
-  const handlePaystack = () => {
+  const handlePaystack = async () => {
     const form = document.querySelector(
       ".addresses"
     ) as HTMLFormElement | null;
@@ -56,8 +55,10 @@ const PaystackForm: React.FC<Props> = ({
 
     if (!valid) return;
 
-    paystackInstance.newTransaction({
-      key: import.meta.env.PAYSTACK_PUBLIC_KEY,
+    const popup = new PaystackPop();
+    console.log(import.meta.env.PAYSTACK_PUBLIC_KEY!)
+    await popup.checkout({
+      key: import.meta.env.PAYSTACK_PUBLIC_KEY!,
       email: user.email,
       amount: Number(order.total) * 381.5 * 100,
 

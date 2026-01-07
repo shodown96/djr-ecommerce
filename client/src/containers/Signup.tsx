@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { authSignup } from "../store/actions/auth";
+import toast from "react-hot-toast";
+import type { SignUpPayload } from "../types";
 
-const Signup = ({ signup, loading, error, token }: any) => {
+const SignUp = ({ signup, loading, error, token }: any) => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
+    first_name: "",
+    last_name: "",
     username: "",
     email: "",
     password1: "",
@@ -30,8 +34,12 @@ const Signup = ({ signup, loading, error, token }: any) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const { username, email, password1, password2 } = form;
-    signup(username, email, password1, password2);
+    const { username, email, first_name, last_name, password1, password2 } = form;
+    if (password1 !== password2) {
+      toast.error("Passwords don't match")
+      return
+    }
+    signup({ username, email, first_name, last_name, password: password1 });
     setSuccess(true);
   };
 
@@ -65,6 +73,20 @@ const Signup = ({ signup, loading, error, token }: any) => {
         )}
 
         <div className="space-y-4">
+          <input
+            name="first_name"
+            placeholder="First name"
+            onChange={handleChange}
+            required
+            className="w-full rounded border px-3 py-2 focus:outline-none focus:ring"
+          />
+          <input
+            name="last_name"
+            placeholder="Last name"
+            onChange={handleChange}
+            required
+            className="w-full rounded border px-3 py-2 focus:outline-none focus:ring"
+          />
           <input
             name="username"
             placeholder="Username"
@@ -111,8 +133,8 @@ const Signup = ({ signup, loading, error, token }: any) => {
 
         <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className="font-medium text-blue-600">
-            Login
+          <Link to="/sign-in" className="font-medium text-blue-600">
+            Signin
           </Link>
         </p>
       </form>
@@ -127,8 +149,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  signup: (username: string, email: string, password1: string, password2: string) =>
-    dispatch(authSignup(username, email, password1, password2)),
+  signup: (data: SignUpPayload) => dispatch(authSignup(data)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Signup);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

@@ -10,7 +10,7 @@ export const API_ENDPOINTS = {
   },
   Addresses: {
     List: "/addresses/",
-    ListByAddressType: (addressType: string) => `/addresses?address_type=${addressType}`,
+    ListByAddressType: (addressType: string) => `/addresses/?address_type=${addressType}`,
     Create: "/addresses/",
     Detail: (id: string) => `/addresses/${id}/`,
     Update: (id: string) => `/addresses/${id}/`,

@@ -18,7 +18,7 @@ type AddressFormData = {
   default: boolean;
   id: string;
   street_address: string;
-  user: number;
+  user: string;
   zip: string;
 };
 
@@ -27,7 +27,7 @@ type Props = {
   formType: string;
   formChanger: () => void;
   activeItem: "billingAddress" | "shippingAddress" | "profile" | string;
-  userID: number;
+  userID: string;
   callback: () => void;
   address?: AddressFormData;
 };
@@ -53,7 +53,7 @@ const AddressForm: React.FC<Props> = (props) => {
       default: false,
       id: "",
       street_address: "",
-      user: 1,
+      user: "",
       zip: "",
     },
   });
@@ -104,56 +104,44 @@ const AddressForm: React.FC<Props> = (props) => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setState((prev) => ({ ...prev, saving: true }));
+    setState((p) => ({ ...p, saving: true }));
 
-    if (formType === UPDATE_FORM) {
-      handleUpdateAddress();
-    } else {
-      handleCreateAddress();
-    }
-  };
+    const isUpdate = formType === UPDATE_FORM;
+    const url = isUpdate
+      ? API_ENDPOINTS.Addresses.Update(formData.id)
+      : API_ENDPOINTS.Addresses.Create;
 
-  const handleCreateAddress = () => {
-    axiosClient
-      .post(API_ENDPOINTS.Addresses.Create, {
-        ...formData,
-        user: userID,
-        address_type: activeItem === "billingAddress" ? "B" : "S",
-      })
-      .then(() => {
-        setState((prev) => ({
-          ...prev,
+    const method = isUpdate ? axiosClient.put : axiosClient.post;
+
+    method(url, {
+      ...formData,
+      user: userID,
+      address_type: activeItem === "billingAddress" ? "B" : "S",
+    })
+      .then((_) => {
+        setState((p) => ({
+          ...p,
           saving: false,
           success: true,
-          formData: { ...prev.formData, default: false },
+          // formData: isUpdate ? res.data.data : { ...p.formData, default: false },
+          formData: {
+            address_type: "",
+            apartment_address: "",
+            country: "",
+            default: false,
+            id: "",
+            street_address: "",
+            user: "",
+            zip: "",
+          },
         }));
         setTimeout(callback, 3000);
       })
-      .catch((err) => {
-        setState((prev) => ({ ...prev, error: err, saving: false }));
-      });
+      .catch((err) =>
+        setState((p) => ({ ...p, error: err, saving: false }))
+      );
   };
 
-  const handleUpdateAddress = () => {
-    axiosClient
-      .put(API_ENDPOINTS.Addresses.Update(formData.id), {
-        ...formData,
-        user: userID,
-        address_type: activeItem === "billingAddress" ? "B" : "S",
-      })
-      .then((res) => {
-        setState((prev) => ({
-          ...prev,
-          saving: false,
-          success: true,
-          formData: res.data,
-        }));
-        setTimeout(callback, 3000);
-      })
-      .catch((err) => {
-        setState((prev) => ({ ...prev, error: err, saving: false }));
-      });
-  };
 
   const renderErrors = (e: any) => (
     <>

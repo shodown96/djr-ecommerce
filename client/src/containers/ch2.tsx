@@ -68,8 +68,9 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
     axiosClient
       .get(API_ENDPOINTS.Addresses.ListByAddressType("B"))
       .then((res) => {
+        const data = res.data.data
         setBillingAddresses(
-          res.data.map((a: any) => ({
+          data.map((a: any) => ({
             key: a.id,
             text: `${a.street_address}, ${a.apartment_address}, ${a.country}`,
             value: a.id,
@@ -78,7 +79,7 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
 
         setState((prev) => ({
           ...prev,
-          selectedBillingAddress: handleGetDefaultAddress(res.data),
+          selectedBillingAddress: handleGetDefaultAddress(data),
           loading: false,
         }));
       })
@@ -93,8 +94,9 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
     axiosClient
       .get(API_ENDPOINTS.Addresses.ListByAddressType("S"))
       .then((res) => {
+        const data = res.data.data
         setShippingAddresses(
-          res.data.map((a: any) => ({
+          data.map((a: any) => ({
             key: a.id,
             text: `${a.street_address}, ${a.apartment_address}, ${a.country}`,
             value: a.id,
@@ -103,7 +105,7 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
 
         setState((prev) => ({
           ...prev,
-          selectedShippingAddress: handleGetDefaultAddress(res.data),
+          selectedShippingAddress: handleGetDefaultAddress(data),
           loading: false,
         }));
       })
@@ -191,7 +193,7 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
   };
 
   if (!authenticated) {
-    throw redirect("/login")
+    throw redirect("/sign-in")
   }
 
   return (
@@ -206,7 +208,7 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
       <h3 className="text-xl font-semibold">Stripe Payment</h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {shippingAddresses.length > 0 ? (
+        {shippingAddresses.length ? (
           <select
             name="selectedShippingAddress"
             onChange={handleSelectChange}
@@ -226,7 +228,7 @@ const Checkout: React.FC<Props> = ({ authenticated }) => {
           </p>
         )}
 
-        {billingAddresses.length > 0 ? (
+        {billingAddresses.length ? (
           <select
             name="selectedBillingAddress"
             onChange={handleSelectChange}

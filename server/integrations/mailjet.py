@@ -2,6 +2,7 @@ from mailjet_rest import Client
 from django.conf import settings
 from django.template.loader import render_to_string
 
+# TODO: Test this out
 mailjet = Client(
     auth=(settings.MAILJET_API_KEY, settings.MAILJET_SECRET_KEY),
     version="v3.1",
