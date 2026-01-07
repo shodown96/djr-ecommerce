@@ -39,7 +39,7 @@ python manage.py runserver
 python manage.py seed_products
 ```
 
-## Run background process
+## Run Background Process
 ```bash
 cd server
 celery -A project worker -l info
@@ -51,7 +51,7 @@ python manage.py run_notifications_consumer
 pytest
 ```
 
-## Frontend development workflow
+## Frontend Development Workflow
 
 Duplicate the `.env.example` file, rename the copy to `.env` and add your own stripe and paystack keys.
 
