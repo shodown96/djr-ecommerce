@@ -1,12 +1,15 @@
-from django.db import models
+import uuid
+
+from common.constants import DBTables
+from common.models import BaseModel
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
 from django.utils import timezone
-import uuid
-from common.constants import DBTables
+
 
 #  TODO: Implement this
-class Activity(models.Model):
+class Activity(BaseModel):
     class Kind(models.TextChoices):
         NOTIFICATION = "notification"
         EVENT = "event"
@@ -29,14 +32,11 @@ class Activity(models.Model):
     type = models.CharField(
         max_length=128,
         db_index=True,
-        help_text="Domain type e.g. order.completed, user.registered"
+        help_text="Domain type e.g. order.completed, user.registered",
     )
 
     actor_id = models.UUIDField(
-        null=True,
-        blank=True,
-        db_index=True,
-        help_text="Who triggered this"
+        null=True, blank=True, db_index=True, help_text="Who triggered this"
     )
 
     # Generic relation (any model)
@@ -49,10 +49,7 @@ class Activity(models.Model):
     object_id = models.CharField(max_length=255, null=True, blank=True)
     subject = GenericForeignKey("content_type", "object_id")
 
-    payload = models.JSONField(
-        default=dict,
-        help_text="Arbitrary structured data"
-    )
+    payload = models.JSONField(default=dict, help_text="Arbitrary structured data")
 
     status = models.CharField(
         max_length=16,
@@ -66,16 +63,14 @@ class Activity(models.Model):
         null=True,
         blank=True,
         unique=True,
-        help_text="Used to prevent duplicate processing"
+        help_text="Used to prevent duplicate processing",
     )
 
     occurred_at = models.DateTimeField(default=timezone.now)
     processed_at = models.DateTimeField(null=True, blank=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-
     class Meta:
-        db_table = DBTables.PostLike
+        db_table = DBTables.Activity
         indexes = [
             models.Index(fields=["kind", "type"]),
             models.Index(fields=["status"]),

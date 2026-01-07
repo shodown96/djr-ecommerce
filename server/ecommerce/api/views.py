@@ -19,10 +19,9 @@ from ecommerce.api.serializers import (
     PaymentSerializer,
     PaystackSerializer,
 )
-from space.models import Activity
 from ecommerce.models import Address, Coupon, Item, Order, OrderItem, Payment, Variation
 from ecommerce.views import create_ref_code
-from events.publisher import publish_event
+from utilities.emissions import emit_order_completed
 from rest_framework.generics import (
     DestroyAPIView,
     ListAPIView,
@@ -268,6 +267,7 @@ class PaymentView(APIView):
             order.shipping_address = shipping_address
             order.ref_code = create_ref_code()
             order.save()
+            emit_order_completed(order, request.user)
 
             raise EmptyResponse("Payment Successful and captured.")
 
@@ -468,6 +468,7 @@ class PaystackChargeView(APIView):
             order.shipping_address = shipping_address
             order.ref_code = res["data"]["reference"]
             order.save()
+            emit_order_completed(order, request.user)
 
             del res["data"]["id"]
             del res["data"]["authorization"]
@@ -528,14 +529,7 @@ class PaystackRecieveView(APIView):
             order.shipping_address = shipping_address
             order.ref_code = info["reference"]
             order.save()
-            publish_event(
-                "order.completed",
-                {
-                    "order_id": str(order.id),
-                    "user_id": str(order.user_id),
-                    "total": order.get_total(),
-                },
-            )
+            emit_order_completed(order, request.user)
             return SuccessResponse(None, "Payment Successful").send()
         raise BadRequestError(None, "Payment Error")
 

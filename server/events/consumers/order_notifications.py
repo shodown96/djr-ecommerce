@@ -2,6 +2,7 @@ from kombu import Connection, Queue, Consumer
 from django.conf import settings
 from events.exchange import EVENTS_EXCHANGE
 from workers.tasks import send_order_completed_email
+from space.models import Activity
 
 
 # Define a queue that will receive order-related events.
@@ -25,13 +26,52 @@ def handle_message(body, message):
     - body: the deserialized event payload (dict)
     - message: the raw Kombu message object
     """
-    # Trigger a background task to send the order completion email.
-    # This keeps email sending async and retry-safe.
-    send_order_completed_email.delay(body["order_id"])
+    activity_id = body.get("activity_id")
 
-    # Acknowledge the message so RabbitMQ knows it was handled.
-    # If this is not called, the message will be redelivered.
-    message.ack()
+    if not activity_id:
+        # Malformed message with no activity reference.
+        # Acknowledge to avoid poison-message loops.
+        message.ack()
+        return
+
+    try:
+        # Always re-fetch the Activity from the database.
+        # The database is the source of truth, not the message payload.
+        activity = Activity.objects.get(id=activity_id)
+    except Activity.DoesNotExist:
+        # The referenced activity no longer exists.
+        # Safely acknowledge and discard the message.
+        message.ack()
+        return
+
+    # Idempotency guard.
+    # If this activity was already processed, do nothing.
+    if activity.status == Activity.Status.PROCESSED:
+        message.ack()
+        return
+
+    try:
+        # Trigger a background task to send the order completion email.
+        # This keeps email sending async and retry-safe.
+        send_order_completed_email.delay(
+            activity.payload.get("order_id")
+        )
+
+        # Mark the activity as processed only after the side effect
+        # has been successfully triggered.
+        activity.mark_processed()
+
+        # Acknowledge the message so RabbitMQ knows it was handled.
+        # If this is not called, the message will be redelivered.
+        message.ack()
+
+    except Exception:
+        # If anything goes wrong, mark the activity as failed.
+        # This allows inspection or replay later.
+        activity.mark_failed()
+
+        # Reject the message without requeueing to avoid infinite retries.
+        message.reject(requeue=False)
     
     
 def consume_order_events():

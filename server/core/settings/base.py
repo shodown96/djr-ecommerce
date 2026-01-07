@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "common",
     "vauth",
     "rest_framework_simplejwt",
+    "space"
 ]
 
 MIDDLEWARE = [

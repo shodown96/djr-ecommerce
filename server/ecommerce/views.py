@@ -15,6 +15,7 @@ import random
 import string
 import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
+from utilities.emissions import emit_order_completed
 
 
 def create_ref_code():
@@ -289,6 +290,7 @@ class PaymentView(View):
                 order.ref_code = create_ref_code()
                 order.save()
 
+                emit_order_completed(order, self.request.user)
                 messages.success(self.request, "Your order was successful!")
                 return redirect("/")
 

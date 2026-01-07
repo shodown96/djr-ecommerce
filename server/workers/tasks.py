@@ -1,7 +1,7 @@
 from celery import shared_task
 from ecommerce.api.serializers import Item, Order
 from utilities.files import image_resize
-from utilities.cache import acquire_idempotency_lock
+# from utilities.cache import acquire_idempotency_lock
 from integrations.mailjet import send_email
 
 
@@ -18,11 +18,12 @@ def resize_item_image(self, item_id):
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=10)
 def send_order_completed_email(self, order_id):
-    key = f"email:order_completed:{order_id}"
-
-    if not acquire_idempotency_lock(key):
-        # Already sent or being processed
-        return "duplicate_skipped"
+    
+    # TODO: Use redis cache for idempotency instead?
+    # key = f"email:order_completed:{order_id}"
+    # if not acquire_idempotency_lock(key):
+    #     # Already sent or being processed
+    #     return "duplicate_skipped"
 
     order = Order.objects.get(id=order_id)
 
