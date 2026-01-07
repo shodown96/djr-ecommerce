@@ -1,5 +1,3 @@
-# apps/core/models/activity.py
-
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -7,7 +5,7 @@ from django.utils import timezone
 import uuid
 from common.constants import DBTables
 
-
+#  TODO: Implement this
 class Activity(models.Model):
     class Kind(models.TextChoices):
         NOTIFICATION = "notification"

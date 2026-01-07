@@ -19,6 +19,7 @@ from ecommerce.api.serializers import (
     PaymentSerializer,
     PaystackSerializer,
 )
+from space.models import Activity
 from ecommerce.models import Address, Coupon, Item, Order, OrderItem, Payment, Variation
 from ecommerce.views import create_ref_code
 from events.publisher import publish_event
